@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const IndexPage = () => {
 
-  const [cool, setPokemon] = useState([]);
+  const [pokemon, setPokemon] = useState([]);
 
   const numOfPokemon = 151;
   let pokemonIds = [];
@@ -16,11 +16,11 @@ const IndexPage = () => {
   }
 
   const fetchPokemon = async () => {
-    const pokemons = pokemonIds.map(id => {
+    const pokemonData = pokemonIds.map(id => {
       return axios.get(`http://pokeapi.co/api/v2/pokemon/${id}`).then(res => res.data);
     });
 
-    Promise.all(pokemons).then((res) => {
+    Promise.all(pokemonData).then((res) => {
       setPokemon(res);
     });
   };
@@ -34,7 +34,7 @@ const IndexPage = () => {
       <SEO title="Home" />
       <ul>
         {
-          cool.map((pokemon, index) => {
+          pokemon.map((pokemon, index) => {
             return <li id={index} key={index}>
               <h3>{pokemon.name}</h3>
               <ul className="types">
