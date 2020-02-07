@@ -33,22 +33,35 @@ const IndexPage = () => {
     // return true or false
   };
 
-
   const encounterPokemon = () => {
-    
-    const pokemonFound = [];
-    let i = 1;
-    // find 7 pokemon
-    while (i <= 7) {
-      const getRandomIndex = Math.floor(Math.random() * allPokemon.length); 
-      pokemonFound.push(allPokemon[getRandomIndex]);
-      i++;
-    }
-    console.log(pokemonFound);
+    const allPokemonFound = [];
+    let i = 0;
+    let numOfEncounters = 7;
 
-    //use filter array method to capture pokemon - pokemonCaught = pokemonFound.filter()
+    // assigns number of possible encounters 
+    if (captured.length + numOfEncounters >= allPokemon.length) {
+      numOfEncounters = allPokemon.length - captured.length;
+    }
+
+    // find 7 pokemon
+    while (i < numOfEncounters) {
+      const getRandomIndex = Math.floor(Math.random() * allPokemon.length); 
+      const thePokemon = allPokemon[getRandomIndex];
+      const pokemonAlreadyFound = allPokemonFound.some(pokemon => pokemon.id === thePokemon.id);
+      const pokemonAlreadyCaught = captured.some(pokemon => pokemon.id === thePokemon.id);
+      // only add to array if pokemon hasn't been found and hasn't been caught
+      if (!pokemonAlreadyFound && !pokemonAlreadyCaught) {
+        allPokemonFound.push(thePokemon);
+        i++;
+      }
+      console.log('loop');
+    }
+
+    console.log(allPokemonFound);
+
+    //use filter array method to capture pokemon - pokemonCaught = allPokemonFound.filter()
     const pokemonCaught = [];
-    setCaptured(pokemonCaught);
+    setCaptured([...captured, ...allPokemonFound]);
   }; 
 
   return (
@@ -57,7 +70,7 @@ const IndexPage = () => {
       <button onClick={encounterPokemon}>Encounter Pokemon</button>
       <ul>
         {
-          allPokemon.map(pokemon => {
+          captured.map(pokemon => {
             return <li id={pokemon.id} key={pokemon.id}>
               <h3>{pokemon.name}</h3>
               <img src={pokemon.image} alt={pokemon.name} />
