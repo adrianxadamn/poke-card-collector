@@ -57,6 +57,8 @@ const IndexPage = () => {
       console.log('loop');
     }
 
+
+
     console.log(allPokemonFound);
 
     //use filter array method to capture pokemon - pokemonCaught = allPokemonFound.filter()
