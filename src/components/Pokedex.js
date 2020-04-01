@@ -8,8 +8,8 @@ const Pokedex = ({ captured }) => {
 		    {
 		      captured.map(pokemon => {
 		        return <li id={pokemon.id} key={pokemon.id}>
-		          <h3>{pokemon.name}</h3>
 		          <img src={pokemon.image} alt={pokemon.name} />
+		          <h3>{pokemon.name}</h3>
 		        </li>
 		      })
 		    }

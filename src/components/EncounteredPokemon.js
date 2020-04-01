@@ -77,8 +77,8 @@ const EncouteredPokemoned = ({captured, setCaptured}) => {
 			      encountered.map(pokemon => {
 			        return <li onClick={capturePokemon.bind(this, pokemon.id)} id={pokemon.id} key={pokemon.id}>
 			          <button> 
-			            <h3>{pokemon.name}</h3>
 			            <img src={pokemon.image} alt={pokemon.name} />
+			            <h3>{pokemon.name}</h3>
 			            <div>Capture!</div>
 			          </button>
 			        </li>
