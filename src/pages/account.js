@@ -13,8 +13,3 @@ const Account = () => (
 )
 
 export default Account;
-
-
-// show 1 pokemon at a time 
-// has counter 
-// shows logs if captured or fled
