@@ -14,7 +14,3 @@ const CreateAccount = () => (
 
 export default CreateAccount;
 
-
-// show 1 pokemon at a time 
-// has counter 
-// shows logs if captured or fled

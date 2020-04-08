@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useStaticQuery, graphql } from "gatsby";
 
+import Button from '@material-ui/core/Button';
+
 const EncouteredPokemoned = ({captured, setCaptured}) => {
 
 	const [encountered, setEncountered] = useState([]);
@@ -68,7 +70,7 @@ const EncouteredPokemoned = ({captured, setCaptured}) => {
 
 	return (
 		<>
-			<button onClick={findPokemon}>Encounter Pokemon</button>
+			<Button onClick={findPokemon} variant="contained" color="primary">Encounter Pokemon</Button>
 
 			<div className="encountered">
 			  <h2>You've encountered these Pokemon!</h2>

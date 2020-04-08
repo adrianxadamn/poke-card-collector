@@ -14,7 +14,6 @@ const IndexPage = () => {
   return (
     <Layout>
       <SEO title="Home" />
-
       <EncounteredPokemon captured={captured} setCaptured={setCaptured} />
       <Pokedex captured={captured} />
 
