@@ -1087,6 +1087,20 @@ module.exports = {
       },
     },
     {
+      resolve: "gatsby-plugin-firebase",
+      options: {
+        credentials: {
+          apiKey: "AIzaSyBVgfFra6nhAXHyPECfVlf7ZDwLWzrZcV8",
+          authDomain: "pokemon-collector-7d65c.firebaseapp.com",
+          databaseURL: "https://pokemon-collector-7d65c.firebaseio.com",
+          projectId: "pokemon-collector-7d65c",
+          storageBucket: "pokemon-collector-7d65c.appspot.com",
+          messagingSenderId: "571911787568",
+          appId: "1:571911787568:web:f35f7f8c6e65028c7a89f5"
+        }
+      }
+    },
+    {
       resolve: `gatsby-plugin-material-ui`,
       // If you want to use styled components, in conjunction to Material-UI, you should:
       // - Change the injection order

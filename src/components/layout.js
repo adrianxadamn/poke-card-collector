@@ -15,6 +15,7 @@ import "./layout.css"
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 const Layout = ({ children }) => {
+
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
