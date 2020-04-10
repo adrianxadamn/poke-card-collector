@@ -1,3 +1,13 @@
+const activeEnv = process.env.GATSBY_ACTIVE_ENV || process.env.NODE_ENV || "development"
+console.log(`Using environment config: '${activeEnv}'`)
+
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
+console.log("process.env.NODE_ENV:", process.env.NODE_ENV);
+console.log("process.env:", process.env);
+
 module.exports = {
   siteMetadata: {
     title: `Poke Card Collector`,
@@ -1090,13 +1100,13 @@ module.exports = {
       resolve: "gatsby-plugin-firebase",
       options: {
         credentials: {
-          apiKey: "AIzaSyBVgfFra6nhAXHyPECfVlf7ZDwLWzrZcV8",
-          authDomain: "pokemon-collector-7d65c.firebaseapp.com",
-          databaseURL: "https://pokemon-collector-7d65c.firebaseio.com",
-          projectId: "pokemon-collector-7d65c",
-          storageBucket: "pokemon-collector-7d65c.appspot.com",
-          messagingSenderId: "571911787568",
-          appId: "1:571911787568:web:f35f7f8c6e65028c7a89f5"
+          apiKey: process.env.apiKey,
+          authDomain: process.env.authDomain,
+          databaseURL: process.env.databaseURL,
+          projectId: process.env.projectId,
+          storageBucket: process.env.storageBucket,
+          messagingSenderId: process.env.messagingSenderId,
+          appId: process.env.appId
         }
       }
     },
