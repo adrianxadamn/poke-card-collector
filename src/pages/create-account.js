@@ -5,6 +5,9 @@ import SEO from "../components/seo"
 import { Container, TextField, Button, Card } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import firebase from '../components/firebase';
+import axios from '../config/axios-accounts';
+
 const useStyles = makeStyles({
 	card: {
 		padding: '40px'
@@ -33,15 +36,21 @@ const CreateAccount = () => {
 
 	const classes = useStyles();
 
-	const test = (event) => {
+	const submitForm = (event) => {
 		event.preventDefault();
-		console.log(event);
+		console.log("formData:", formData);
+		// axios.post('/accounts.json', formData);
+		const {username, email, password} = formData;
+
+		console.log("firebase:", firebase);
+
+		firebase.register(username, email, password);
 	};
 
 	const handleChange = (event) => {
 		const value = event.target.value;
 		const name = event.target.name;
-		const data = {};
+		const data = formData || {};
 		data[name] = value;
 		setformData(data);
 	};
@@ -57,11 +66,11 @@ const CreateAccount = () => {
 	    <Container maxWidth="sm">
 	    	<Card className={classes.card}>
 	    		<h1 className={classes.title}>Create Account</h1>
-		    	<form onSubmit={test} className={classes.form} autoComplete="off">
+		    	<form className={classes.form} autoComplete="off">
 		    	  <TextField onChange={handleChange} className={classes.textInput} id="username" name="username" label="Username" variant="outlined" />
-		    	  <TextField onChange={handleChange} className={classes.textInput} id="email" name="email" label="Email" variant="outlined" />
-		    	  <TextField onChange={handleChange} className={classes.textInput} id="password" name="password" label="Password" variant="outlined" />
-	    			<Button onClick={test} type="submit" className={classes.button} variant="contained" color="primary">Submit</Button>
+		    	  <TextField type="email" onChange={handleChange} className={classes.textInput} id="email" name="email" label="Email" variant="outlined" />
+		    	  <TextField type="password" onChange={handleChange} className={classes.textInput} id="password" name="password" label="Password" variant="outlined" />
+	    			<Button onClick={submitForm} type="submit" className={classes.button} variant="contained" color="primary">Submit</Button>
 		    	</form>
 	    	</Card>
 
