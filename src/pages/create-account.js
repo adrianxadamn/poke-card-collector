@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "gatsby"
-import Layout from "../components/layout"
+import React, { useState, useContext } from "react";
+import { Link, navigate } from "gatsby"
 import SEO from "../components/seo"
+
+import { FirebaseContext } from '../components/Firebase';
+
 import { Container, TextField, Button, Card } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
-import firebase from '../components/firebase';
-import axios from '../config/axios-accounts';
 
 const useStyles = makeStyles({
 	card: {
@@ -33,18 +32,24 @@ const useStyles = makeStyles({
 const CreateAccount = () => {
 
 	const [formData, setformData] = useState({});
-
 	const classes = useStyles();
+	const { firebase } = useContext(FirebaseContext);
+
+	const onRegister = async () => {
+		console.log("formData:", formData);
+		console.log("firebase:", firebase);
+		const {username, email, password} = formData;
+		try {
+			await firebase.register(username, email, password);
+			navigate('/account');
+		} catch(error) {
+			alert(error.message);
+		}
+	};
 
 	const submitForm = (event) => {
 		event.preventDefault();
-		console.log("formData:", formData);
-		// axios.post('/accounts.json', formData);
-		const {username, email, password} = formData;
-
-		console.log("firebase:", firebase);
-
-		firebase.register(username, email, password);
+		onRegister();
 	};
 
 	const handleChange = (event) => {
@@ -55,12 +60,8 @@ const CreateAccount = () => {
 		setformData(data);
 	};
 
-	useEffect(() => {
-		console.log("formData:", formData);
-	}, [formData]); 
-
 	return (
-	  <Layout>
+	  <section>
 	    <SEO title="Create Account" />
 
 	    <Container maxWidth="sm">
@@ -77,7 +78,7 @@ const CreateAccount = () => {
 	    </Container>
 
 	    <Link to="/">Go back to the homepage</Link>
-	  </Layout>
+	  </section>
 	);
 };
 
