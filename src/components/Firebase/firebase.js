@@ -20,10 +20,26 @@ class Firebase {
     await this.auth.signOut();
   }
 
+  async getUserProfile({userId}) {
+    return this.db.collection('users').where('userId', '==', userId).get();
+  }
+
+  async usernameAlreadyExist(username) {
+    return await this.db.collection('users').doc(username).get().then(doc => doc.exists);
+  }
+
   async register(username, email, password) {
-    await this.auth.createUserWithEmailAndPassword(email, password);
-    return this.auth.currentUser.updateProfile({
-      displayName: username
+    const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
+    return this.db.collection('users').doc(username).set({
+      userId: newUser.user.uid
+    });
+  }
+
+  async addCapturedPokemon(userId) {
+    const user = await this.db.collection('users').where('userId', '==', userId).get();
+    const username = user.docs[0].id;
+    return this.db.collection('users').doc(username).update({
+      pokemon: 'test'
     });
   }
 }

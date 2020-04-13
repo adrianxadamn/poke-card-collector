@@ -36,13 +36,17 @@ const CreateAccount = () => {
 	const { firebase } = useContext(FirebaseContext);
 
 	const onRegister = async () => {
-		console.log("formData:", formData);
-		console.log("firebase:", firebase);
 		const {username, email, password} = formData;
 		try {
+			const usernameAlreadyExist = await firebase.usernameAlreadyExist(username);
+			if (usernameAlreadyExist) {
+				alert(`${username} already exists`);
+				return false;
+			}
 			await firebase.register(username, email, password);
 			navigate('/account');
 		} catch(error) {
+			console.log(error);
 			alert(error.message);
 		}
 	};
