@@ -20,10 +20,14 @@ class Firebase {
     await this.auth.signOut();
   }
 
+  async getUserProfile({userId}) {
+    return this.db.collection('users').where('userId', '==', userId).get();
+  }
+
   async register(username, email, password) {
-    await this.auth.createUserWithEmailAndPassword(email, password);
-    return this.auth.currentUser.updateProfile({
-      displayName: username
+    const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
+    return this.db.collection('users').doc(username).set({
+      userId: newUser.user.uid
     });
   }
 }

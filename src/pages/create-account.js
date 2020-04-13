@@ -43,6 +43,7 @@ const CreateAccount = () => {
 			await firebase.register(username, email, password);
 			navigate('/account');
 		} catch(error) {
+			console.log(error);
 			alert(error.message);
 		}
 	};
