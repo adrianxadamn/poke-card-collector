@@ -25,6 +25,7 @@ class Firebase {
   }
 
   async register(username, email, password) {
+    // need to add check if username is already created
     const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
     return this.db.collection('users').doc(username).set({
       userId: newUser.user.uid
