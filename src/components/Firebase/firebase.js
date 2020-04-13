@@ -24,8 +24,11 @@ class Firebase {
     return this.db.collection('users').where('userId', '==', userId).get();
   }
 
+  async usernameAlreadyExist(username) {
+    return await this.db.collection('users').doc(username).get().then(doc => doc.exists);
+  }
+
   async register(username, email, password) {
-    // need to add check if username is already created
     const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
     return this.db.collection('users').doc(username).set({
       userId: newUser.user.uid
