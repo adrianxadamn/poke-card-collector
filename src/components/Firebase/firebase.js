@@ -30,6 +30,14 @@ class Firebase {
       userId: newUser.user.uid
     });
   }
+
+  async addCapturedPokemon(userId) {
+    const user = await this.db.collection('users').where('userId', '==', userId).get();
+    const username = user.docs[0].id;
+    return this.db.collection('users').doc(username).update({
+      pokemon: 'test'
+    });
+  }
 }
 
 let firebaseInstance;

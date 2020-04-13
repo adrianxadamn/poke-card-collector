@@ -38,6 +38,11 @@ const Account = () => {
 		firebase.logout().then(() => navigate('/'));
 	};
 
+	const addPokemonTest = () => {
+		const uid = user.uid;
+		firebase.addCapturedPokemon(uid);
+	};
+
 	return (
 	  <section>
 	    <SEO title="Account" />
@@ -51,6 +56,7 @@ const Account = () => {
 	    		return (
 	    			<>
 	    				<div>Loaded</div>
+	    				<Button onClick={addPokemonTest} type="submit" className={classes.button} variant="contained" color="primary">Add Pokemon</Button>
 	    				<Button onClick={logout} type="submit" className={classes.button} variant="contained" color="primary">Logout</Button>
 	    			</>
 	    		);
