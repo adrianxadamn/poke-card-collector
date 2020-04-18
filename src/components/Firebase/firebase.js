@@ -13,34 +13,49 @@ class Firebase {
   }
 
   async login({email, password}) {
-    console.log("email:", email);
-    console.log("password:", password);
-    console.log("this.auth.signInWithEmailAndPassword(email, password):", this.auth.signInWithEmailAndPassword(email, password));
-    return this.auth.signInWithEmailAndPassword(email, password);
+    const success = await this.auth.signInWithEmailAndPassword(email, password);
+    const username = await this.db.collection('users').where('user_id', '==', success.user.uid).get().then(data => data.docs[0].id);
+    return this.db.collection('users').doc(username).update({
+      last_login: success.user.metadata.lastSignInTime.slice(0, -13)
+    }).then(() => {
+      return true;
+    });
   }
 
   async logout() {
     await this.auth.signOut();
   }
 
-  async getUserProfile({userId}) {
-    return this.db.collection('users').where('userId', '==', userId).get();
+  async getUserProfile({user_id}) {
+    return this.db.collection('users').where('user_id', '==', user_id).get();
   }
 
   async usernameAlreadyExist(username) {
-    return await this.db.collection('users').doc(username).get().then(doc => doc.exists);
+    return this.db.collection('users').doc(username).get().then(doc => doc.exists);
   }
+
+  async getUserDoc({user_id}) {
+    if (user_id) {
+      const username = await this.db.collection('users').where('user_id', '==', user_id).get().then(data => data.docs[0].id);
+      const info = await this.db.collection('users').doc(username).get().then((doc) => doc.data());
+      return info;
+    }
+  };
 
   async register(username, email, password) {
     const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
     return this.db.collection('users').doc(username).set({
-      userId: newUser.user.uid
+      user_id: newUser.user.uid,
+      username: username,
+      creation_time: newUser.user.metadata.creationTime.slice(0, -13),
+      last_login: newUser.user.metadata.lastSignInTime.slice(0, -13)
+    }).then(() => {
+      return true;
     });
   }
 
-  async addCapturedPokemon(userId) {
-    const user = await this.db.collection('users').where('userId', '==', userId).get();
-    const username = user.docs[0].id;
+  async addCapturedPokemon(user_id) {
+    const username = await this.db.collection('users').where('user_id', '==', user_id).get().then(data => data.docs[0].id );
     return this.db.collection('users').doc(username).update({
       pokemon: 'test'
     });

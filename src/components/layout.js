@@ -17,7 +17,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 const Layout = ({ children }) => {
 
-  const {user, firebase, loading} = useAuth();
+  const {user, firebase, loading, userData} = useAuth();
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
@@ -29,7 +29,7 @@ const Layout = ({ children }) => {
   `);
   
   return (
-    <FirebaseContext.Provider value={{user, firebase, loading}}>
+    <FirebaseContext.Provider value={{user, firebase, loading, userData}}>
       <Header siteTitle={data.site.siteMetadata.title} />
       <div
         style={{

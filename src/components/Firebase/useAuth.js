@@ -6,6 +6,7 @@ function useAuth() {
     const [user, setUser] = useState(null)
     const [firebase, setFirebase] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [userData, setUserData] = useState(null);
 
     useEffect(() => {
         let unsubscribe
@@ -16,17 +17,22 @@ function useAuth() {
             setFirebase(firebaseInstance)
 
             unsubscribe = firebaseInstance.auth.onAuthStateChanged(userResult => {
+                console.log("userResult:", userResult);
                 if (userResult) {
                     firebaseInstance.getUserProfile({
-                      userId: userResult.uid
+                      user_id: userResult.uid
                     }).then(r => {
-                      console.log(r);
+                      firebaseInstance.getUserDoc({
+                        user_id: userResult.uid
+                      }).then(r => {
+                        setUserData(r);
+                      });
                     });
                     setUser(userResult);
                     // get user custom claims
                     /*setLoading(true);
                     Promise.all([
-                        firebaseInstance.getUserProfile({ userId: userResult.uid }),
+                        firebaseInstance.getUserProfile({ user_id: userResult.uid }),
                         firebaseInstance.auth.currentUser.getIdTokenResult(true),
                     ]).then((result) => {
                         const publicProfileResult = result[0]
@@ -35,7 +41,7 @@ function useAuth() {
                         if (publicProfileResult.empty) {
                             publicProfileUnsubscribe = firebaseInstance.db
                               .collection("publicProfiles")
-                              .where("userId", "==", userResult.uid)
+                              .where("user_id", "==", userResult.uid)
                               .onSnapshot((snapshot) => {
                                   const publicProfileDoc = snapshot.docs[0]
                                   if (publicProfileDoc && publicProfileDoc.id) {
@@ -80,7 +86,7 @@ function useAuth() {
         }
     }, [])
 
-    return { user, firebase, loading }
+    return { user, firebase, loading, userData }
 }
 
 export default useAuth
