@@ -99,4 +99,6 @@ const Account = () => {
 	);
 };
 
+// next step: find pokemon button to redirect you to find-pokemon page
+
 export default Account;
