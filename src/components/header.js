@@ -41,7 +41,7 @@ const Header = ({ siteTitle }) => {
             if (user) {
               return <li><Link to="/account">Account</Link></li>
             } else {
-              return <li><Link to="/create-account">Account</Link></li>
+              return <li><Link to="/login">Account</Link></li>
             }
           })()}
         </ul>

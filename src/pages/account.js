@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
-import { Link, navigate } from "gatsby"
+import { navigate } from "gatsby"
 
 import SEO from "../components/seo"
 
 import { FirebaseContext } from '../components/Firebase';
 
-import { Button } from '@material-ui/core';
+import { Button, Card, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
@@ -14,6 +14,9 @@ const useStyles = makeStyles({
 	},
 	title: {
 		textAlign: 'center'
+	},
+	h2: {
+		textAlign: 'left'
 	},
 	form: {
 		display: 'flex',
@@ -34,6 +37,8 @@ const Account = () => {
 	const classes = useStyles();
 	const { user, firebase, loading } = useContext(FirebaseContext);
 
+	console.log("user:", user);
+
 	const logout = () => {
 		firebase.logout().then(() => navigate('/'));
 	};
@@ -47,18 +52,47 @@ const Account = () => {
 	  <section>
 	    <SEO title="Account" />
 	    <h1>Account</h1>
-	    <Link to="/">Go back to the homepage</Link>
 	    {(() => {
-	    	if (!loading) {
+	    	if (!loading && user !== null) {
 	    		if (user === undefined) {
 	    			navigate('/create-account');
 	    		}
 	    		return (
-	    			<>
-	    				<div>Loaded</div>
+	    			<Card className={classes.card}>
+	    				<h2 className={classes.h2}>Stats:</h2>
+	    		
+	    				<TableContainer>
+	    					<Table>
+	    						<TableHead>
+	    							<TableRow hover>
+		    							<TableCell>Name</TableCell>
+		    							<TableCell>Pokedex</TableCell>
+		    							<TableCell>Rank</TableCell>
+		    							<TableCell>Completion</TableCell>
+		    							<TableCell>Time</TableCell>
+		    							<TableCell>Date Joined</TableCell>
+		    							<TableCell>Completed</TableCell>
+		    							<TableCell>Last Login</TableCell>
+	    							</TableRow>
+	    						</TableHead>
+	    						<TableBody>
+	    							<TableRow hover>
+		    							<TableCell>Adrian</TableCell>
+		    							<TableCell>0/151</TableCell>
+		    							<TableCell>1</TableCell>
+		    							<TableCell>0%</TableCell>
+		    							<TableCell>Days</TableCell>
+		    							<TableCell>{user.metadata.creationTime.slice(0, -13)}</TableCell>
+		    							<TableCell>N/A</TableCell>
+		    							<TableCell>{user.metadata.lastSignInTime.slice(0, -13)}</TableCell>
+	    							</TableRow>
+	    						</TableBody>
+	    					</Table>
+	    				</TableContainer>
+	    				    				
 	    				<Button onClick={addPokemonTest} type="submit" className={classes.button} variant="contained" color="primary">Add Pokemon</Button>
 	    				<Button onClick={logout} type="submit" className={classes.button} variant="contained" color="primary">Logout</Button>
-	    			</>
+	    			</Card>
 	    		);
 	    	}
 	    })()}
