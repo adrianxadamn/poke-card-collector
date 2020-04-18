@@ -35,9 +35,7 @@ const useStyles = makeStyles({
 
 const Account = () => {
 	const classes = useStyles();
-	const { user, firebase, loading } = useContext(FirebaseContext);
-
-	console.log("user:", user);
+	const { user, firebase, loading, userData } = useContext(FirebaseContext);
 
 	const logout = () => {
 		firebase.logout().then(() => navigate('/'));
@@ -53,10 +51,11 @@ const Account = () => {
 	    <SEO title="Account" />
 	    <h1>Account</h1>
 	    {(() => {
-	    	if (!loading && user !== null) {
+	    	if (!loading && user !== null && userData !== null) {
 	    		if (user === undefined) {
 	    			navigate('/create-account');
 	    		}
+
 	    		return (
 	    			<Card className={classes.card}>
 	    				<h2 className={classes.h2}>Stats:</h2>
@@ -77,7 +76,7 @@ const Account = () => {
 	    						</TableHead>
 	    						<TableBody>
 	    							<TableRow hover>
-		    							<TableCell>Adrian</TableCell>
+		    							<TableCell>{userData.username}</TableCell>
 		    							<TableCell>0/151</TableCell>
 		    							<TableCell>1</TableCell>
 		    							<TableCell>0%</TableCell>

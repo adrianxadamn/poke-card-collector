@@ -13,9 +13,6 @@ class Firebase {
   }
 
   async login({email, password}) {
-    console.log("email:", email);
-    console.log("password:", password);
-    console.log("this.auth.signInWithEmailAndPassword(email, password):", this.auth.signInWithEmailAndPassword(email, password));
     return this.auth.signInWithEmailAndPassword(email, password);
   }
 
@@ -28,13 +25,20 @@ class Firebase {
   }
 
   async usernameAlreadyExist(username) {
-    return await this.db.collection('users').doc(username).get().then(doc => doc.exists);
+    return this.db.collection('users').doc(username).get().then(doc => doc.exists);
   }
+
+  async getUserDoc({userId}) {
+    const username = await this.db.collection('users').where('userId', '==', userId).get().then(data => data.docs[0].id);
+    const info = await this.db.collection('users').doc(username).get().then((doc) => doc.data());
+    return info;
+  };
 
   async register(username, email, password) {
     const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
     return this.db.collection('users').doc(username).set({
-      userId: newUser.user.uid
+      userId: newUser.user.uid,
+      username: username
     });
   }
 

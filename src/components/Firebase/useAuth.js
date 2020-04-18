@@ -6,6 +6,7 @@ function useAuth() {
     const [user, setUser] = useState(null)
     const [firebase, setFirebase] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [userData, setUserData] = useState(null);
 
     useEffect(() => {
         let unsubscribe
@@ -20,7 +21,11 @@ function useAuth() {
                     firebaseInstance.getUserProfile({
                       userId: userResult.uid
                     }).then(r => {
-                      console.log(r);
+                      firebaseInstance.getUserDoc({
+                        userId: userResult.uid
+                      }).then(r => {
+                        setUserData(r);
+                      });
                     });
                     setUser(userResult);
                     // get user custom claims
@@ -80,7 +85,7 @@ function useAuth() {
         }
     }, [])
 
-    return { user, firebase, loading }
+    return { user, firebase, loading, userData }
 }
 
 export default useAuth
