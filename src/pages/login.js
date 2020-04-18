@@ -37,8 +37,10 @@ const Login = () => {
 
 	const onLogin = async () => {
 		try {
-			await firebase.login(formData);
-			navigate('/account');
+			const success = await firebase.login(formData);
+			if (success) {
+				navigate('/account');
+			}
 		} catch(error) {
 			console.log(error);
 			alert(error.message);

@@ -43,8 +43,10 @@ const CreateAccount = () => {
 				alert(`${username} already exists`);
 				return false;
 			}
-			await firebase.register(username, email, password);
-			navigate('/account');
+			const success = await firebase.register(username, email, password);
+			if (success) {
+				navigate('/account');
+			}
 		} catch(error) {
 			console.log(error);
 			alert(error.message);

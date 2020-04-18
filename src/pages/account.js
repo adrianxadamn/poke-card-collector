@@ -81,9 +81,9 @@ const Account = () => {
 		    							<TableCell>1</TableCell>
 		    							<TableCell>0%</TableCell>
 		    							<TableCell>Days</TableCell>
-		    							<TableCell>{user.metadata.creationTime.slice(0, -13)}</TableCell>
+		    							<TableCell>{userData.creation_time}</TableCell>
 		    							<TableCell>N/A</TableCell>
-		    							<TableCell>{user.metadata.lastSignInTime.slice(0, -13)}</TableCell>
+		    							<TableCell>{userData.last_login}</TableCell>
 	    							</TableRow>
 	    						</TableBody>
 	    					</Table>
