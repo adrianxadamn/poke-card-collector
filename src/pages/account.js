@@ -53,10 +53,9 @@ const Account = () => {
 	    <SEO title="Account" />
 	    <h1>Account</h1>
 	    {(() => {
-	    	if (!loading) {
+	    	if (!loading && user !== null) {
 	    		if (user === undefined) {
 	    			navigate('/create-account');
-	    			return false;
 	    		}
 	    		return (
 	    			<Card className={classes.card}>

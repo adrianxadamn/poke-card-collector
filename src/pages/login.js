@@ -29,21 +29,15 @@ const useStyles = makeStyles({
 	}
 });
 
-const CreateAccount = () => {
+const Login = () => {
 
 	const [formData, setformData] = useState({});
 	const classes = useStyles();
 	const { firebase } = useContext(FirebaseContext);
 
-	const onRegister = async () => {
-		const {username, email, password} = formData;
+	const onLogin = async () => {
 		try {
-			const usernameAlreadyExist = await firebase.usernameAlreadyExist(username);
-			if (usernameAlreadyExist) {
-				alert(`${username} already exists`);
-				return false;
-			}
-			await firebase.register(username, email, password);
+			await firebase.login(formData);
 			navigate('/account');
 		} catch(error) {
 			console.log(error);
@@ -53,7 +47,7 @@ const CreateAccount = () => {
 
 	const submitForm = (event) => {
 		event.preventDefault();
-		onRegister();
+		onLogin();
 	};
 
 	const handleChange = (event) => {
@@ -66,17 +60,16 @@ const CreateAccount = () => {
 
 	return (
 	  <section>
-	    <SEO title="Create Account" />
+	    <SEO title="Login" />
 
 	    <Container maxWidth="sm">
 	    	<Card className={classes.card}>
-	    		<h1 className={classes.title}>Create Account</h1>
+	    		<h1 className={classes.title}>Login</h1>
 		    	<form className={classes.form} autoComplete="off">
-		    	  <TextField onChange={handleChange} className={classes.textInput} id="username" name="username" label="Username" variant="outlined" />
 		    	  <TextField type="email" onChange={handleChange} className={classes.textInput} id="email" name="email" label="Email" variant="outlined" />
 		    	  <TextField type="password" onChange={handleChange} className={classes.textInput} id="password" name="password" label="Password" variant="outlined" />
-	    			<Button onClick={submitForm} type="submit" className={classes.button} variant="contained" color="primary">Submit</Button>
-	    			<span>Already have an account? Login <Link to="/login">here.</Link></span>
+	    			<Button onClick={submitForm} type="submit" className={classes.button} variant="contained" color="primary">Login</Button>
+	    			<span>Don't have an account? Create one <Link to="/create-account">here.</Link></span>
 		    	</form>
 	    	</Card>
 
@@ -87,5 +80,5 @@ const CreateAccount = () => {
 	);
 };
 
-export default CreateAccount;
+export default Login;
 
