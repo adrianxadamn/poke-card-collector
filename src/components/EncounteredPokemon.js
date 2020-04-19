@@ -1,9 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useStaticQuery, graphql } from "gatsby";
 
-import Button from '@material-ui/core/Button';
+import { FirebaseContext } from '../components/Firebase';
+
+import { Button, Card } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+	card: {
+		padding: '40px 20px'
+	},
+	image: {
+		marginBottom: 0
+	}
+});
 
 const EncouteredPokemoned = ({captured, setCaptured}) => {
+
+	const classes = useStyles();
+
+	const { firebase, userData, setUserData } = useContext(FirebaseContext);
 
 	const [encountered, setEncountered] = useState([]);
 
@@ -32,6 +48,10 @@ const EncouteredPokemoned = ({captured, setCaptured}) => {
 	  if (caught) {
 	    setCaptured([...captured, currPokemon]);
 	    console.log(`You caught, ${currPokemon.name}!`);
+	    let dateString = new Date().toUTCString();
+	    dateString = dateString.split(' ').slice(0, 4).join(' ');
+	    currPokemon.date_caught = dateString;
+	    firebase.addCapturedPokemon(userData, setUserData, currPokemon);
 	  } else {
 	    console.log(`Could not capture, ${currPokemon.name}`);
 	  }
@@ -78,11 +98,13 @@ const EncouteredPokemoned = ({captured, setCaptured}) => {
 			    {
 			      encountered.map(pokemon => {
 			        return <li onClick={capturePokemon.bind(this, pokemon.id)} id={pokemon.id} key={pokemon.id}>
-			          <button> 
-			            <img src={pokemon.image} alt={pokemon.name} />
-			            <h3>{pokemon.name}</h3>
-			            <div>Capture!</div>
-			          </button>
+				        <button> 
+			        		<Card className={classes.card}>
+				            <img className={classes.image} src={pokemon.image} alt={pokemon.name} />
+				            <h3>{pokemon.name}</h3>
+				            <div>Capture!</div>
+			        		</Card>
+				        </button>
 			        </li>
 			      })
 			    }

@@ -1,15 +1,38 @@
-import React from "react"
-import { Link } from "gatsby"
+import React, { useState, useContext } from "react"
+import { navigate } from "gatsby"
 import SEO from "../components/seo"
 
-const FindPokemon = () => (
-  <section>
-    <SEO title="Find Pokemon" />
-    <h1>Find Pokemon</h1>
-    <Link to="/">Go back to the homepage</Link>
-  </section>
-)
+import { FirebaseContext } from '../components/Firebase';
 
+import EncounteredPokemon from '../components/EncounteredPokemon';
+
+const FindPokemon = () => {
+
+	const { user, firebase, loading } = useContext(FirebaseContext);
+
+	const [captured, setCaptured] = useState([]);
+	
+	return (
+
+	  <section>
+	    <SEO title="Find Pokemon" />
+	    <h1>Find Pokemon</h1>
+
+	    {(() => {
+	    	if (!loading && firebase !== null) {
+	    		if (user === null) {
+	    			navigate('/login');
+	    		}
+	    		return (
+				    <EncounteredPokemon captured={captured} setCaptured={setCaptured} />
+	    		)
+	    	}
+	    })()}
+
+	  </section>
+	);
+
+};
 export default FindPokemon;
 
 
