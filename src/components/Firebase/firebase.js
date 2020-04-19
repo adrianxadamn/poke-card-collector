@@ -48,17 +48,29 @@ class Firebase {
       user_id: newUser.user.uid,
       username: username,
       creation_time: newUser.user.metadata.creationTime.slice(0, -13),
-      last_login: newUser.user.metadata.lastSignInTime.slice(0, -13)
+      last_login: newUser.user.metadata.lastSignInTime.slice(0, -13),
+      pokemons: []
     }).then(() => {
       return true;
     });
   }
 
-  async addCapturedPokemon(user_id) {
-    const username = await this.db.collection('users').where('user_id', '==', user_id).get().then(data => data.docs[0].id );
-    return this.db.collection('users').doc(username).update({
-      pokemon: 'test'
+  async addCapturedPokemon(userData, setUserData, pokemon) {
+    let capturedPokemon = [pokemon]; 
+    if (userData.pokemons !== undefined) {
+      capturedPokemon = [...userData.pokemons, pokemon].filter(pokemon => pokemon !== undefined);   
+    } 
+    return this.db.collection('users').doc(userData.username).update({
+      pokemons: capturedPokemon
+    }).then((res) => {
+      const newUserData = Object.assign({}, userData);
+      newUserData.pokemons = capturedPokemon;
+      setUserData(newUserData);
     });
+  }
+
+  async getRankings() {
+    return '';
   }
 }
 

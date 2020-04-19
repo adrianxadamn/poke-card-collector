@@ -1,35 +1,30 @@
 import React, { useContext } from "react";
 import { navigate } from "gatsby"
-
 import SEO from "../components/seo"
 
 import { FirebaseContext } from '../components/Firebase';
 
-import { Button, Card, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import { Divider, Button, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+import Pokedex from '../components/Pokedex';
 
 const useStyles = makeStyles({
 	card: {
-		padding: '40px'
-	},
-	title: {
-		textAlign: 'center'
+		padding: '40px',
+		marginBottom: '40px'
 	},
 	h2: {
 		textAlign: 'left'
-	},
-	form: {
-		display: 'flex',
-		flexDirection: 'column'
-	},
-	textInput: {
-		marginBottom: '20px'
 	},
 	button: {
 		width: '100%',
 		maxWidth: '280px',
 		height: '46px',
 		margin: '0 auto'
+	},
+	divider: {
+		margin: '20px 0'
 	}
 });
 
@@ -41,9 +36,8 @@ const Account = () => {
 		firebase.logout().then(() => navigate('/'));
 	};
 
-	const addPokemonTest = () => {
-		const uid = user.uid;
-		firebase.addCapturedPokemon(uid);
+	const findPokemon = () => {
+		navigate('/find-pokemon');
 	};
 
 	return (
@@ -51,52 +45,65 @@ const Account = () => {
 	    <SEO title="Account" />
 	    <h1>Account</h1>
 	    {(() => {
-	    	if (!loading && user !== null && userData !== null) {
-	    		if (user === undefined) {
+	    	if (!loading && firebase !== null && userData !== null) {
+	    		if (user === null) {
 	    			navigate('/create-account');
 	    		}
-
 	    		return (
-	    			<Card className={classes.card}>
-	    				<h2 className={classes.h2}>Stats:</h2>
-	    		
-	    				<TableContainer>
-	    					<Table>
-	    						<TableHead>
-	    							<TableRow hover>
-		    							<TableCell>Name</TableCell>
-		    							<TableCell>Pokedex</TableCell>
-		    							<TableCell>Rank</TableCell>
-		    							<TableCell>Completion</TableCell>
-		    							<TableCell>Time</TableCell>
-		    							<TableCell>Date Joined</TableCell>
-		    							<TableCell>Completed</TableCell>
-		    							<TableCell>Last Login</TableCell>
-	    							</TableRow>
-	    						</TableHead>
-	    						<TableBody>
-	    							<TableRow hover>
-		    							<TableCell>{userData.username}</TableCell>
-		    							<TableCell>0/151</TableCell>
-		    							<TableCell>1</TableCell>
-		    							<TableCell>0%</TableCell>
-		    							<TableCell>Days</TableCell>
-		    							<TableCell>{userData.creation_time}</TableCell>
-		    							<TableCell>N/A</TableCell>
-		    							<TableCell>{userData.last_login}</TableCell>
-	    							</TableRow>
-	    						</TableBody>
-	    					</Table>
-	    				</TableContainer>
-	    				    				
-	    				<Button onClick={addPokemonTest} type="submit" className={classes.button} variant="contained" color="primary">Add Pokemon</Button>
-	    				<Button onClick={logout} type="submit" className={classes.button} variant="contained" color="primary">Logout</Button>
-	    			</Card>
+	    			<>
+		    			<Card className={classes.card}>
+		    				<h2 className={classes.h2}>Stats:</h2>
+		    		
+		    				<TableContainer>
+		    					<Table>
+		    						<TableHead>
+		    							<TableRow hover>
+			    							<TableCell>Name</TableCell>
+			    							<TableCell>Pokedex</TableCell>
+			    							<TableCell>Rank</TableCell>
+			    							<TableCell>Completion</TableCell>
+			    							<TableCell>Time</TableCell>
+			    							<TableCell>Date Joined</TableCell>
+			    							<TableCell>Completed</TableCell>
+			    							<TableCell>Last Login</TableCell>
+		    							</TableRow>
+		    						</TableHead>
+		    						<TableBody>
+		    							<TableRow hover>
+			    							<TableCell>{userData.username}</TableCell>
+			    							{userData.pokemons.length > 0 ? 
+			    								<TableCell>{userData.pokemons.length}/151</TableCell>
+			    								:
+			    								<TableCell>0/151</TableCell>
+			    							}
+			    							<TableCell>1</TableCell>
+			    							{userData.pokemons.length > 0 ? 
+			    								<TableCell>{((userData.pokemons.length / 151) * 100).toFixed(2)}%</TableCell>
+			    								: 
+			    								<TableCell>0%</TableCell>
+			    							}
+			    							<TableCell>Days</TableCell>
+			    							<TableCell>{userData.creation_time}</TableCell>
+			    							<TableCell>N/A</TableCell>
+			    							<TableCell>{userData.last_login}</TableCell>
+		    							</TableRow>
+		    						</TableBody>
+		    					</Table>
+		    				</TableContainer>
+		    				    			
+		    				<Button onClick={findPokemon} type="submit" className={classes.button} variant="contained" color="primary">Find Pokemon</Button>
+		    				<Button onClick={logout} type="submit" className={classes.button} variant="contained" color="primary">Logout</Button>
+		    			</Card>
+
+		    			{userData.pokemons.length > 0 ? <Pokedex /> : ''}
+	    			</>
 	    		);
 	    	}
 	    })()}
 	  </section>
 	);
 };
+
+// next step: find pokemon button to redirect you to find-pokemon page
 
 export default Account;
