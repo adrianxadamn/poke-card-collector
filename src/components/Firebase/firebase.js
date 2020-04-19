@@ -69,8 +69,12 @@ class Firebase {
     });
   }
 
-  async getRankings() {
-    return '';
+  // find way to make this real time
+  async getRankings(username) {
+    let users = await this.db.collection('users').get();
+    users = users.docs.map(user => user.data());
+    users.sort((a, b) => b.pokemons.length - a.pokemons.length);
+    return users.findIndex((user) => user.username === username) + 1;
   }
 }
 
