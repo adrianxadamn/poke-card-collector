@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { navigate } from "gatsby"
 import SEO from "../components/seo"
 
@@ -32,12 +32,19 @@ const Account = () => {
 	const classes = useStyles();
 	const { user, firebase, loading, userData } = useContext(FirebaseContext);
 
+	const [ranking, setRanking] = useState('');
+
 	const logout = () => {
 		firebase.logout().then(() => navigate('/'));
 	};
 
 	const findPokemon = () => {
 		navigate('/find-pokemon');
+	};
+
+	const getRankings = async () => {
+		const index = await firebase.getRankings(userData.username);
+		setRanking(index);
 	};
 
 	return (
@@ -49,6 +56,7 @@ const Account = () => {
 	    		if (user === null) {
 	    			navigate('/create-account');
 	    		}
+	    		getRankings();
 	    		return (
 	    			<>
 		    			<Card className={classes.card}>
@@ -76,7 +84,7 @@ const Account = () => {
 			    								:
 			    								<TableCell>0/151</TableCell>
 			    							}
-			    							<TableCell>1</TableCell>
+			    							<TableCell>{ranking}</TableCell>
 			    							{userData.pokemons.length > 0 ? 
 			    								<TableCell>{((userData.pokemons.length / 151) * 100).toFixed(2)}%</TableCell>
 			    								: 
