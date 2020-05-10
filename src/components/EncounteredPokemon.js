@@ -27,7 +27,7 @@ const EncouteredPokemon = ({captured, setCaptured}) => {
 		if (userData !== null) {
 			setCaptured(userData.pokemons);
 		}
-	}, [userData]);
+	}, [setCaptured, userData]);
 
 	const data = useStaticQuery(graphql`
 	  query pokemon {
