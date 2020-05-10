@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { navigate } from "gatsby"
 import SEO from "../components/seo"
 
@@ -42,21 +42,26 @@ const Account = () => {
 		navigate('/find-pokemon');
 	};
 
-	const getRankings = async () => {
-		const index = await firebase.getRankings(userData.username);
-		setRanking(index);
-	};
+	useEffect(() => {
+		const getRankings = async () => {
+			const index = await firebase.getRankings(userData.username);
+			setRanking(index);
+		};
+		if (firebase !== null) {
+			getRankings();
+		}
+	}, [firebase, userData]);
 
 	return (
 	  <section>
 	    <SEO title="Account" />
 	    <h1>Account</h1>
 	    {(() => {
-	    	if (!loading && firebase !== null && userData !== null) {
+	    	if (!loading && firebase !== null) {
 	    		if (user === null) {
 	    			navigate('/create-account');
 	    		}
-	    		getRankings();
+
 	    		return (
 	    			<>
 		    			<Card className={classes.card}>
@@ -113,5 +118,7 @@ const Account = () => {
 };
 
 // next step: find pokemon button to redirect you to find-pokemon page
+
+// post deployment: make sure session ends after a day or whatever to sign user out automatically
 
 export default Account;
