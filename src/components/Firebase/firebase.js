@@ -76,6 +76,17 @@ class Firebase {
     users.sort((a, b) => b.pokemons.length - a.pokemons.length);
     return users.findIndex((user) => user.username === username) + 1;
   }
+
+  async getAllUsers(sortBy) {
+    let users = await this.db.collection('users').get();
+    users = users.docs.map(user => user.data());
+
+    if (sortBy === 'rank') {
+      users.sort((a, b) => b.pokemons.length - a.pokemons.length);
+    }
+
+    return users;
+  }
 }
 
 let firebaseInstance;

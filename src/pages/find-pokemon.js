@@ -20,9 +20,11 @@ const FindPokemon = () => {
 
 	    {(() => {
 	    	if (!loading && firebase !== null) {
+
 	    		if (user === null) {
 	    			navigate('/login');
 	    		}
+
 	    		return (
 				    <EncounteredPokemon captured={captured} setCaptured={setCaptured} />
 	    		)

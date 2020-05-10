@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useStaticQuery, graphql } from "gatsby";
 
 import { FirebaseContext } from '../components/Firebase';
@@ -15,13 +15,19 @@ const useStyles = makeStyles({
 	}
 });
 
-const EncouteredPokemoned = ({captured, setCaptured}) => {
+const EncouteredPokemon = ({captured, setCaptured}) => {
 
 	const classes = useStyles();
 
 	const { firebase, userData, setUserData } = useContext(FirebaseContext);
 
 	const [encountered, setEncountered] = useState([]);
+
+	useEffect(() => {
+		if (userData !== null) {
+			setCaptured(userData.pokemons);
+		}
+	}, [userData]);
 
 	const data = useStaticQuery(graphql`
 	  query pokemon {
@@ -97,8 +103,8 @@ const EncouteredPokemoned = ({captured, setCaptured}) => {
 			  <ul className="encountered-pokemon">
 			    {
 			      encountered.map(pokemon => {
-			        return <li onClick={capturePokemon.bind(this, pokemon.id)} id={pokemon.id} key={pokemon.id}>
-				        <button> 
+			        return <li id={pokemon.id} key={pokemon.id}>
+				        <button onClick={capturePokemon.bind(this, pokemon.id)}> 
 			        		<Card className={classes.card}>
 				            <img className={classes.image} src={pokemon.image} alt={pokemon.name} />
 				            <h3>{pokemon.name}</h3>
@@ -114,4 +120,4 @@ const EncouteredPokemoned = ({captured, setCaptured}) => {
 	);
 };
 
-export default EncouteredPokemoned;
+export default EncouteredPokemon;
