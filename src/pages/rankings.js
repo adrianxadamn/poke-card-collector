@@ -55,8 +55,7 @@ const Rankings = () => {
 	    		return (
 	    			<>
 		    			<Card className={classes.card}>
-		    				<h2 className={classes.h2}>Stats:</h2>
-		    				
+
 		    				<TableContainer>
 		    					<Table>
 		    						<TableHead>
@@ -111,3 +110,5 @@ const Rankings = () => {
 };
 
 export default Rankings;
+
+// add sorting feature
