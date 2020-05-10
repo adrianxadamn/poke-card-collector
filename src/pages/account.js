@@ -4,7 +4,7 @@ import SEO from "../components/seo"
 
 import { FirebaseContext } from '../components/Firebase';
 
-import { Divider, Button, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import { Button, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Pokedex from '../components/Pokedex';

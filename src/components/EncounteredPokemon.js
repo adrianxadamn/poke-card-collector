@@ -97,8 +97,8 @@ const EncouteredPokemoned = ({captured, setCaptured}) => {
 			  <ul className="encountered-pokemon">
 			    {
 			      encountered.map(pokemon => {
-			        return <li onClick={capturePokemon.bind(this, pokemon.id)} id={pokemon.id} key={pokemon.id}>
-				        <button> 
+			        return <li>
+				        <button onClick={capturePokemon.bind(this, pokemon.id)} id={pokemon.id} key={pokemon.id}> 
 			        		<Card className={classes.card}>
 				            <img className={classes.image} src={pokemon.image} alt={pokemon.name} />
 				            <h3>{pokemon.name}</h3>
