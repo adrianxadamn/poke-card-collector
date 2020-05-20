@@ -34,9 +34,16 @@ class Firebase {
     return this.db.collection('users').doc(username).get().then(doc => doc.exists);
   }
 
-  async getUserDoc({user_id}) {
+  async getUserDocById({user_id}) {
     if (user_id) {
       const username = await this.db.collection('users').where('user_id', '==', user_id).get().then(data => data.docs[0].id);
+      const info = await this.db.collection('users').doc(username).get().then((doc) => doc.data());
+      return info;
+    }
+  };
+
+  async getUserDocByUsername({username}) {
+    if (username) {
       const info = await this.db.collection('users').doc(username).get().then((doc) => doc.data());
       return info;
     }
