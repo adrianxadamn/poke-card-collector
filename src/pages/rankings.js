@@ -39,9 +39,9 @@ const Rankings = () => {
 			setUsers(users);
 		};
 		if (firebase !== null) {
-			getAllUsers(users);
+			getAllUsers();
 		}
-	}, [firebase, users]);
+	}, [firebase]);
 
 	return (
 	  <section>
