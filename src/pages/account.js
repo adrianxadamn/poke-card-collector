@@ -47,17 +47,17 @@ const Account = () => {
 			const index = await firebase.getRankings(userData.username);
 			setRanking(index);
 		};
-		if (firebase !== null) {
+		if (firebase !== null && user !== null) {
 			getRankings();
 		}
-	}, [firebase, userData]);
+	}, [firebase, user, userData]);
 
 	return (
 	  <section>
 	    <SEO title="Account" />
 	    <h1>Account</h1>
 	    {(() => {
-	    	if (!loading && firebase !== null) {
+	    	if (!loading && firebase !== null && userData !== null) {
 	    		if (user === null) {
 	    			navigate('/create-account');
 	    		}

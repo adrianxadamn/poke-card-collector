@@ -36,7 +36,9 @@ const Layout = ({ children }) => {
           padding: `0 1.0875rem 1.45rem`,
         }}
       >
-        <main>{children}</main>
+        {user && firebase && userData && setUserData && 
+          <main>{children}</main>
+        }
         <footer>
           © {new Date().getFullYear()}, Built with
           {` `}
