@@ -47,7 +47,7 @@ const Account = () => {
 			const index = await firebase.getRankings(userData.username);
 			setRanking(index);
 		};
-		if (firebase !== null && user !== null) {
+		if (firebase !== null && user !== null && userData !== null) {
 			getRankings();
 		}
 	}, [firebase, user, userData]);
@@ -108,7 +108,7 @@ const Account = () => {
 		    				<Button onClick={logout} type="submit" className={classes.button} variant="contained" color="primary">Logout</Button>
 		    			</Card>
 
-		    			{userData.pokemons.length > 0 ? <Pokedex /> : ''}
+		    			{userData.pokemons.length > 0 ? <Pokedex trainerData={userData} /> : ''}
 	    			</>
 	    		);
 	    	}

@@ -1,6 +1,4 @@
-import React, { useContext } from "react";
-
-import { FirebaseContext } from '../components/Firebase';
+import React from "react";
 
 import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -18,10 +16,8 @@ const useStyles = makeStyles({
 });
 
 
-const Pokedex = () => {
+const Pokedex = ({trainerData}) => {
 	
-	const { userData } = useContext(FirebaseContext);
-
 	const classes = useStyles();
 
 	return (
@@ -41,7 +37,7 @@ const Pokedex = () => {
 					</TableHead>
 					<TableBody>
 						{
-							userData.pokemons.map(pokemon => {
+							trainerData.pokemons.map(pokemon => {
 								return (
 									<TableRow id={pokemon.id} key={pokemon.id} hover>
 										<TableCell><img className={classes.image} src={pokemon.image} alt={pokemon.name} /></TableCell>

@@ -8,6 +8,8 @@ function useAuth() {
     const [loading, setLoading] = useState(true)
     const [userData, setUserData] = useState(null);
 
+    // use cookies to store data to prevent firebase document reads
+
     useEffect(() => {
         let unsubscribe
         let publicProfileUnsubscribe
@@ -22,7 +24,7 @@ function useAuth() {
                     firebaseInstance.getUserProfile({
                       user_id: userResult.uid
                     }).then(r => {
-                      firebaseInstance.getUserDoc({
+                      firebaseInstance.getUserDocById({
                         user_id: userResult.uid
                       }).then(r => {
                         setUserData(r);
