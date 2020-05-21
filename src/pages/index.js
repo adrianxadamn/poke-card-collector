@@ -6,6 +6,8 @@ import { Link } from 'gatsby';
 import { Grid, Card } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
 
+import Notifications from '../components/Notifications';
+
 const useStyles = makeStyles({
 	card: {
 		padding: '20px',
@@ -54,7 +56,9 @@ const IndexPage = () => {
       		</Card>
       	</Grid>
       	<Grid item xs={3}>
-      		<Card className={classes.card}>Sidebar Info Ticker</Card>
+      		<Card className={classes.card}>
+            <Notifications />
+          </Card>
       	</Grid>
       </Grid>
     </section>

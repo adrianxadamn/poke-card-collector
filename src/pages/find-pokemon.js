@@ -46,8 +46,8 @@ const FindPokemon = () => {
 			scrollBar.current.scrollTop = scrollBar.current.scrollHeight;
 		}
 	}, [logs]);
+	
 	return (
-
 	  <section>
 	    <SEO title="Find Pokemon" />
 	    <h1>Find Pokemon</h1>

@@ -94,6 +94,13 @@ class Firebase {
 
     return users;
   }
+
+  async getNotifications() {
+    let notifications = await this.db.collection('notifications').get();
+    notifications = notifications.docs.map(item => item.data());
+    notifications.sort((a,b) => a.time.seconds - b.time.seconds);
+    return notifications;
+  }
 }
 
 let firebaseInstance;
