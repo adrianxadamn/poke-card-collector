@@ -68,7 +68,7 @@ const EncouteredPokemon = ({captured, setCaptured}) => {
 	const findPokemon = () => {
 	  const allEncounteredPokemon = [];
 	  let i = 0;
-	  let numOfEncounters = 7;
+	  let numOfEncounters = 8;
 	  // assigns number of possible encounters 
 	  if (captured.length + numOfEncounters >= allPokemon.length) {
 	    numOfEncounters = allPokemon.length - captured.length;

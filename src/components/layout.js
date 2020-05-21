@@ -10,7 +10,7 @@ import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
 import {FirebaseContext, useAuth} from './Firebase';
 
-import Header from "./header"
+import Header from "./Header"
 import "./layout.css"
 
 const Layout = ({ children }) => {
@@ -32,7 +32,7 @@ const Layout = ({ children }) => {
       <div
         style={{
           margin: `0 auto`,
-          maxWidth: 960,
+          maxWidth: 1280,
           padding: `0 1.0875rem 1.45rem`,
         }}
       >
