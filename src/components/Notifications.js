@@ -1,6 +1,5 @@
-import React, { useState, useContext, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { Link } from "gatsby";
-import { FirebaseContext } from '../components/Firebase';
 import ReactHtmlParser from 'react-html-parser';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -27,11 +26,9 @@ const months = [
 	'Sep', 'Oct', 'Nov', 'Dec',	
 ];
 
-const Notifications = () => {
+const Notifications = ({firebase}) => {
 	const classes = useStyles();
-	const { firebase, loading } = useContext(FirebaseContext);
 	const [notifications, setNotifications] = useState([]);
-	const [users, setUsers] = useState([]);
 	const scrollBar = useRef(null);
 
 	useEffect(() => {
@@ -41,19 +38,31 @@ const Notifications = () => {
 	}, [notifications]);
 
 	useEffect(() => {
-		const getFirebaseNotifications = async () => {
-			const notifications = await firebase.getNotifications();
-			setNotifications(notifications);
-		};
-		if (firebase !== null) {
-			getFirebaseNotifications();
-		}
-	}, [firebase]);
+	  const unsubscribe = firebase.subscribeToNotifications({
+	    onSnapshot: (snapshot) => {
+	      console.log(snapshot);
+	      const snapshotNotifications = [];
+	      snapshot.forEach(doc => {
+	        snapshotNotifications.push({
+	          id: doc.id,
+	          ...doc.data()
+	        })
+	      })
+	      setNotifications(snapshotNotifications);
+	    }
+	  })
+
+	  return () => {
+	    if(unsubscribe){
+	      unsubscribe();
+	    }
+	  }
+	}, [])
 
 	return (
 		<>
 			<h2>Notifications</h2>
-			{ !loading && firebase &&
+			{ firebase &&
 				<ul className={classes.logs} ref={scrollBar}>
 					{ notifications.length > 0 && 
 						notifications.map((item, index) => {
