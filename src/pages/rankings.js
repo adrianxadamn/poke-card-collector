@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import SEO from "../components/seo"
+import { Link } from "gatsby";
 
 import { FirebaseContext } from '../components/Firebase';
 
@@ -75,7 +76,11 @@ const Rankings = () => {
 	    									users.map((user, index) => {
 	    										return (
 					    							<TableRow hover key={user.user_id}>
-						    							<TableCell>{user.username}</TableCell>
+						    							<TableCell>
+						    								<Link to={`/trainers/${user.username}`}>
+						    									{user.username}
+						    								</Link>
+						    							</TableCell>
 						    							{user.pokemons.length > 0 ? 
 						    								<TableCell>{user.pokemons.length}/151</TableCell>
 						    								:
@@ -91,7 +96,7 @@ const Rankings = () => {
 						    							<TableCell>{user.creation_time}</TableCell>
 						    							<TableCell>N/A</TableCell>
 						    							<TableCell>{user.last_login}</TableCell>
-					    							</TableRow>
+				    							</TableRow>
 	    										)
 	    									})
 	    								}
