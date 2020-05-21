@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 
-import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import { Button, Card } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+import GalleryView from './GalleryView';
+import TableView from './TableView';
 
 const useStyles = makeStyles({
 	card: {
@@ -12,6 +15,17 @@ const useStyles = makeStyles({
 	},
 	image: {
 		marginBottom: 0
+	},
+	button: {
+		width: '100%',
+		maxWidth: '280px',
+		height: '46px',
+		margin: '0 auto'
+	},
+	pokemonCard: {
+		padding: '20px',
+		boxShadow: 'none',
+		border: '1px solid black'
 	}
 });
 
@@ -20,54 +34,35 @@ const Pokedex = ({trainerData}) => {
 	
 	const classes = useStyles();
 
+	const [isGalleryView, setIsGalleryView] = useState(false);
+	const [pokemons, setPokemons] = useState([...trainerData.pokemons]);
+ 
+	const toggleView = useCallback(() => {
+		if (isGalleryView) {
+			setIsGalleryView(false);
+		} else {
+			setIsGalleryView(true);
+		}
+	}, [isGalleryView]);
+
 	return (
 
 		<Card className={classes.card}>
 			<h2 className={classes.h2}>Pokedex:</h2>
-	
-			<TableContainer>
-				<Table>
-					<TableHead>
-						<TableRow hover>
-							<TableCell>Avatar</TableCell>
-							<TableCell>Name</TableCell>
-							<TableCell>ID</TableCell>
-							<TableCell>Time Caught</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{
-							trainerData.pokemons.map(pokemon => {
-								return (
-									<TableRow id={pokemon.id} key={pokemon.id} hover>
-										<TableCell><img className={classes.image} src={pokemon.image} alt={pokemon.name} /></TableCell>
-										<TableCell>{pokemon.name}</TableCell>
-										<TableCell>#{pokemon.id}</TableCell>
-										<TableCell>{pokemon.date_caught}</TableCell>
-									</TableRow>
-								)
-							})
-						}
-					</TableBody>
-				</Table>
-			</TableContainer>
-		</Card>
+			<Button onClick={toggleView} type="submit" className={classes.button} variant="contained" color="primary">Toggle View</Button>
 
-		// <div className="pokedex">
-		//   <h2>Your Pokedex</h2>
-		//   <ul>
-		//     {
-		//       userData.pokemons.map(pokemon => {
-		//         return <li id={pokemon.id} key={pokemon.id}>
-		//         	<Card className={classes.card}>
-		// 	          <img className={classes.image} src={pokemon.image} alt={pokemon.name} />
-		// 	          <h3>{pokemon.name}</h3>
-		//         	</Card>
-		//         </li>
-		//       })
-		//     }
-		//   </ul>
-		// </div>
+			{(() => {
+				if (isGalleryView) {
+					return (
+						<GalleryView pokemons={pokemons} />
+					)
+				} else {
+					return (
+						<TableView pokemons={pokemons} setPokemons={setPokemons}></TableView>
+					)
+				}
+			})()}
+		</Card>
 	);
 };
 
