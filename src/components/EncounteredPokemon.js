@@ -15,7 +15,7 @@ const useStyles = makeStyles({
 	}
 });
 
-const EncouteredPokemon = ({captured, setCaptured}) => {
+const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 
 	const classes = useStyles();
 
@@ -51,15 +51,18 @@ const EncouteredPokemon = ({captured, setCaptured}) => {
 	  const currPokemon = allPokemon.find(pokemon => pokemon.id === id);
 	  const getRandomCapturePerc = Math.floor(Math.random() * 100);
 	  const caught = (getRandomCapturePerc + currPokemon.capture_rate >= 100) ? true : false;
+	  console.log(`you rolled ${getRandomCapturePerc}`);
 	  if (caught) {
 	    setCaptured([...captured, currPokemon]);
-	    console.log(`You caught, ${currPokemon.name}!`);
+	    console.log(`you caught ${currPokemon.name}!`);
+	    setLogs([...logs, `you rolled ${getRandomCapturePerc}`, `you caught <span style="text-decoration: underline;">${currPokemon.name}</span>!`]);
 	    let dateString = new Date().toUTCString();
 	    dateString = dateString.split(' ').slice(0, 4).join(' ');
 	    currPokemon.date_caught = dateString;
 	    firebase.addCapturedPokemon(userData, setUserData, currPokemon);
 	  } else {
-	    console.log(`Could not capture, ${currPokemon.name}`);
+	    console.log(`could not capture ${currPokemon.name}`);
+	    setLogs([...logs, `you rolled ${getRandomCapturePerc}`, `could not capture <span style="text-decoration: underline;">${currPokemon.name}</span>`]);
 	  }
 	  const pokemonLeft = encountered.filter(pokemon => pokemon.id !== currPokemon.id);
 	  setEncountered(pokemonLeft);
@@ -78,8 +81,10 @@ const EncouteredPokemon = ({captured, setCaptured}) => {
 	    const getRandomIndex = Math.floor(Math.random() * allPokemon.length); 
 	    const getRandomEncounterPerc = Math.floor(Math.random() * 100); 
 	    const currPokemon = allPokemon[getRandomIndex];
+	    console.log(`you rolled ${getRandomEncounterPerc}`);
 	    if (getRandomEncounterPerc + currPokemon.encounter_rate < 100) {
-	      console.log(currPokemon.name, 'flees from you');
+	      console.log(`${currPokemon.name} flees from you`);
+	      setLogs([...logs, `you rolled ${getRandomEncounterPerc}`, `<span style="text-decoration: underline;">${currPokemon.name}</span> flees from you`]);
 	      continue;
 	    }
 	    const pokemonAlreadyFound = allEncounteredPokemon.some(pokemon => pokemon.id === currPokemon.id);

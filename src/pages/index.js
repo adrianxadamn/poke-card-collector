@@ -25,7 +25,7 @@ const IndexPage = () => {
       <SEO title="Home" />
 
       <Grid container spacing={3}>
-      	<Grid item xs={8}>
+      	<Grid item xs={9}>
       		<Card className={classes.card}>
       			<h2 className={classes.h2}>Welcome to Poke Card Collector!</h2>
       			<p>Join the ranks and capture all 151 pokemons as quickly as you can!</p>
@@ -53,7 +53,7 @@ const IndexPage = () => {
       			</p>
       		</Card>
       	</Grid>
-      	<Grid item xs={4}>
+      	<Grid item xs={3}>
       		<Card className={classes.card}>Sidebar Info Ticker</Card>
       	</Grid>
       </Grid>

@@ -6,6 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
 	pokemonCard: {
 		padding: '20px'
+	},
+	image: {
+		marginBottom: 0
 	}
 });
 
