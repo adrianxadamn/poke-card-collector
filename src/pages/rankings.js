@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import SEO from "../components/seo"
 import { Link } from "gatsby";
+import moment from 'moment';
 
 import { FirebaseContext } from '../components/Firebase';
 
@@ -23,6 +24,18 @@ const useStyles = makeStyles({
 	},
 	divider: {
 		margin: '20px 0'
+	},
+	goldColor: {
+		color: '#CFB53B',
+		fontWeight: '700'
+	},
+	silverColor: {
+		color: '#C0C0C0',
+		fontWeight: '700'
+	},
+	bronzeColor: {
+		color: '#8C7853',
+		fontWeight: '700'
 	}
 });
 
@@ -49,7 +62,6 @@ const Rankings = () => {
 	    <SEO title="Rankings" />
 	    <h1>Rankings</h1>
 
-
 	    {(() => {
 	    	if (!loading && firebase !== null) {
 
@@ -58,26 +70,37 @@ const Rankings = () => {
 		    			<Card className={classes.card}>
 
 		    				<TableContainer>
-		    					<Table>
+		    					<Table >
 		    						<TableHead>
 		    							<TableRow hover>
+			    							<TableCell>Rank</TableCell>
 			    							<TableCell>Name</TableCell>
 			    							<TableCell>Pokedex</TableCell>
-			    							<TableCell>Rank</TableCell>
 			    							<TableCell>Completion</TableCell>
-			    							<TableCell>Time</TableCell>
+			    							<TableCell>Elapsed Time</TableCell>
 			    							<TableCell>Date Joined</TableCell>
-			    							<TableCell>Completed</TableCell>
+			    							<TableCell>Date Completed</TableCell>
 			    							<TableCell>Last Login</TableCell>
 		    							</TableRow>
 		    						</TableHead>
 		    						<TableBody>
 	    								{
 	    									users.map((user, index) => {
+	    										const daysOld = moment().diff(user.creation_time, 'days');
+	    										const completionTime = (user.completion_time ? moment(user.completion_time).format('MM/DD/YYYY') : 'N/A');
+	    										let colorClass = ''; 
+	    										if (index === 0) {
+	    											colorClass = classes.goldColor;
+	    										} else if (index === 1) {
+	    											colorClass = classes.silverColor;
+	    										} else if (index === 2) { 
+	    											colorClass = classes.bronzeColor;
+	    										}
 	    										return (
 					    							<TableRow hover key={user.user_id}>
+						    							<TableCell className={colorClass}>{index + 1}</TableCell>
 						    							<TableCell>
-						    								<Link to={`/trainers/${user.username}`}>
+						    								<Link className={colorClass} to={`/trainers/${user.username}`}>
 						    									{user.username}
 						    								</Link>
 						    							</TableCell>
@@ -86,16 +109,15 @@ const Rankings = () => {
 						    								:
 						    								<TableCell>0/151</TableCell>
 						    							}
-						    							<TableCell>{index + 1}</TableCell>
 						    							{user.pokemons.length > 0 ? 
 						    								<TableCell>{((user.pokemons.length / 151) * 100).toFixed(2)}%</TableCell>
 						    								: 
 						    								<TableCell>0%</TableCell>
 						    							}
-						    							<TableCell>Days</TableCell>
-						    							<TableCell>{user.creation_time}</TableCell>
-						    							<TableCell>N/A</TableCell>
-						    							<TableCell>{user.last_login}</TableCell>
+						    							<TableCell>{daysOld} Day{daysOld === 1 ? '' : 's'}</TableCell>
+						    							<TableCell>{moment(user.creation_time).format('MM/DD/YYYY')}</TableCell>
+						    							<TableCell>{completionTime}</TableCell>
+						    							<TableCell>{moment(user.last_login).format('MM/DD/YYYY')}</TableCell>
 				    							</TableRow>
 	    										)
 	    									})

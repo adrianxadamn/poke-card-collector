@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useStaticQuery, graphql } from "gatsby";
-
+import moment from 'moment';
 import { FirebaseContext } from '../components/Firebase';
 
 import { Button, Card } from '@material-ui/core';
@@ -47,7 +47,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 
 	const allPokemon = data.site.siteMetadata.pokemon;
 
-	const capturePokemon = (id) => {
+	const capturePokemon = async (id) => {
 	  const currPokemon = allPokemon.find(pokemon => pokemon.id === id);
 	  const getRandomCapturePerc = Math.floor(Math.random() * 100);
 	  const caught = (getRandomCapturePerc + currPokemon.capture_rate >= 100) ? true : false;
@@ -60,6 +60,10 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	    dateString = dateString.split(' ').slice(0, 4).join(' ');
 	    currPokemon.date_caught = dateString;
 	    firebase.addCapturedPokemon(userData, setUserData, currPokemon);
+	    if ([...captured, currPokemon] === 151) {
+	    	const stringDate = moment().format('ddd, DD MMMM YYYY h:mm:ss');
+	    	firebase.addCompletionDate(userData, stringDate);
+	    }	
 	  } else {
 	    console.log(`could not capture ${currPokemon.name}`);
 	    setLogs([...logs, `you rolled ${getRandomCapturePerc}`, `could not capture <span style="text-decoration: underline;">${currPokemon.name}</span>`]);
