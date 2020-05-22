@@ -62,12 +62,24 @@ class Firebase {
     });
   }
 
+  async updateUserLoginDate(userData, date) {
+    return this.db.collection('users').doc(userData.username).update({
+      login_date: date
+    });
+  }
+
+  async addCompletionDate(userData, date) {
+    return this.db.collection('users').doc(userData.username).update({
+      completion_time: date
+    });
+  }
+
   async addCapturedPokemon(userData, setUserData, pokemon) {
     let capturedPokemon = [pokemon]; 
     if (userData.pokemons !== undefined) {
       capturedPokemon = [...userData.pokemons, pokemon].filter(pokemon => pokemon !== undefined);   
     } 
-    return this.db.collection('users').doc(userData.username).update({
+    this.db.collection('users').doc(userData.username).update({
       pokemons: capturedPokemon
     }).then((res) => {
       const newUserData = Object.assign({}, userData);

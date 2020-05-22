@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import SEO from "../components/seo"
+import moment from 'moment';
 
 import { FirebaseContext } from '../components/Firebase';
 
@@ -24,6 +25,18 @@ const useStyles = makeStyles({
 	},
 	divider: {
 		margin: '20px 0'
+	},
+	goldColor: {
+		color: '#CFB53B',
+		fontWeight: '700'
+	},
+	silverColor: {
+		color: '#C0C0C0',
+		fontWeight: '700'
+	},
+	bronzeColor: {
+		color: '#8C7853',
+		fontWeight: '700'
 	}
 });
 
@@ -65,6 +78,17 @@ const Trainer = (props) => {
 	        {(() => {
 	        	if (!loading && firebase !== null && trainer !== null) {
 
+	        		const daysOld = moment().diff(trainer.creation_time, 'days');
+	        		const completionTime = (trainer.completion_time ? moment(trainer.completion_time).format('MM/DD/YYYY') : 'N/A');
+	        		let colorClass = ''; 
+	        		if (ranking === 1) {
+	        			colorClass = classes.goldColor;
+	        		} else if (ranking === 2) {
+	        			colorClass = classes.silverColor;
+	        		} else if (ranking === 3) { 
+	        			colorClass = classes.bronzeColor;
+	        		}
+
 	        		return (
 	        			<>
 	    	    			<Card className={classes.card}>
@@ -74,34 +98,34 @@ const Trainer = (props) => {
 	    	    					<Table>
 	    	    						<TableHead>
 	    	    							<TableRow hover>
+	    		    							<TableCell>Rank</TableCell>
 	    		    							<TableCell>Name</TableCell>
 	    		    							<TableCell>Pokedex</TableCell>
-	    		    							<TableCell>Rank</TableCell>
 	    		    							<TableCell>Completion</TableCell>
-	    		    							<TableCell>Time</TableCell>
+	    		    							<TableCell>Elapsed Time</TableCell>
 	    		    							<TableCell>Date Joined</TableCell>
-	    		    							<TableCell>Completed</TableCell>
+	    		    							<TableCell>Date Completed</TableCell>
 	    		    							<TableCell>Last Login</TableCell>
 	    	    							</TableRow>
 	    	    						</TableHead>
 	    	    						<TableBody>
 	    	    							<TableRow hover>
-	    		    							<TableCell>{trainer.username}</TableCell>
+	    		    							<TableCell className={colorClass}>{ranking}</TableCell>
+	    		    							<TableCell className={colorClass}>{trainer.username}</TableCell>
 	    		    							{trainer.pokemons.length > 0 ? 
 	    		    								<TableCell>{trainer.pokemons.length}/151</TableCell>
 	    		    								:
 	    		    								<TableCell>0/151</TableCell>
 	    		    							}
-	    		    							<TableCell>{ranking}</TableCell>
 	    		    							{trainer.pokemons.length > 0 ? 
 	    		    								<TableCell>{((trainer.pokemons.length / 151) * 100).toFixed(2)}%</TableCell>
 	    		    								: 
 	    		    								<TableCell>0%</TableCell>
 	    		    							}
-	    		    							<TableCell>Days</TableCell>
-	    		    							<TableCell>{trainer.creation_time}</TableCell>
-	    		    							<TableCell>N/A</TableCell>
-	    		    							<TableCell>{trainer.last_login}</TableCell>
+	    		    							<TableCell>{daysOld} Day{daysOld === 1 ? '' : 's'}</TableCell>
+	    		    							<TableCell>{moment(trainer.creation_time).format('MM/DD/YYYY')}</TableCell>
+	    		    							<TableCell>{completionTime}</TableCell>
+	    		    							<TableCell>{moment(trainer.last_login).format('MM/DD/YYYY')}</TableCell>
 	    	    							</TableRow>
 	    	    						</TableBody>
 	    	    					</Table>
