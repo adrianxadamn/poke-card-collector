@@ -96,10 +96,9 @@ class Firebase {
   }
 
   subscribeToNotifications({onSnapshot}){
-    let notifications = this.db.collection('notifications').orderBy('time', 'asc').onSnapshot(onSnapshot);
+    let notifications = this.db.collection('notifications').orderBy('time', 'desc').limit(50).onSnapshot(onSnapshot);
     return notifications;
   }
-
 }
 
 let firebaseInstance;

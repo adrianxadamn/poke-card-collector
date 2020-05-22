@@ -60,8 +60,8 @@ const Trainer = (props) => {
 
 	return (
 	  <section>
-	    <SEO title="Your Trainer" />
-	    <h1>Your Trainer</h1>
+	    <SEO title={username} />
+	    <h1>Trainer: {username}</h1>
 	        {(() => {
 	        	if (!loading && firebase !== null && trainer !== null) {
 

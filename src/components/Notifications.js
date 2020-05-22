@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { Link } from "gatsby";
 import ReactHtmlParser from 'react-html-parser';
+import moment from 'moment';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -19,12 +20,6 @@ const useStyles = makeStyles({
 		padding: '10px 0'
 	}
 });
-
-const months = [
-	'Jan', 'Feb', 'Mar', 'Apr',	
-	'May', 'Jun', 'Jul', 'Aug',	
-	'Sep', 'Oct', 'Nov', 'Dec',	
-];
 
 const Notifications = ({firebase}) => {
 	const classes = useStyles();
@@ -47,8 +42,9 @@ const Notifications = ({firebase}) => {
 	          id: doc.id,
 	          ...doc.data()
 	        })
-	      })
-	      setNotifications(snapshotNotifications);
+	      });
+
+	      setNotifications(snapshotNotifications.reverse());
 	    }
 	  })
 
@@ -57,7 +53,7 @@ const Notifications = ({firebase}) => {
 	      unsubscribe();
 	    }
 	  }
-	}, [])
+	}, [firebase])
 
 	return (
 		<>
@@ -66,15 +62,10 @@ const Notifications = ({firebase}) => {
 				<ul className={classes.logs} ref={scrollBar}>
 					{ notifications.length > 0 && 
 						notifications.map((item, index) => {
-							const date = new Date(item.time.seconds * 1000).getDate();
-							const month = new Date(item.time.seconds * 1000).getMonth();
-							const day = new Date(item.time.seconds * 1000).toDateString().slice(0, 3);
-							const year = new Date(item.time.seconds * 1000).getFullYear();
-							const time = `${day}, ${date} ${months[month]} ${year}`;
 							return <li className={classes.logItem} key={index}>
-												<Link to={`/trainers/${item.username}`}>{item.user}</Link>
+												<Link to={`/trainers/${item.user}`}>{item.user}</Link>
 												{' '}
-												{ReactHtmlParser(item.content)} - {time}
+												{ReactHtmlParser(item.content)} - {moment(item.time.toDate()).fromNow()}
 										 </li>
 						})}
 				</ul>
