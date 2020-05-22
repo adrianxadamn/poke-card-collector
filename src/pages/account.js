@@ -7,7 +7,20 @@ import { FirebaseContext } from '../components/Firebase';
 import TrainerTable from '../components/TrainerTable';
 import Pokedex from '../components/Pokedex';
 
+import { Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+	button: {
+		width: '100%',
+		maxWidth: '280px',
+		height: '46px',
+		margin: '0 auto'
+	}
+});
+
 const Account = () => {
+	const classes = useStyles();
 	const { user, firebase, loading, userData } = useContext(FirebaseContext);
 	const [ranking, setRanking] = useState('');
 
@@ -40,6 +53,9 @@ const Account = () => {
 	    		}
 	    		return (
 	    			<>
+	    				<Button onClick={findPokemon} type="submit" className={classes.button} variant="contained" color="primary">Find Pokemon</Button>
+	    				<Button onClick={logout} type="submit" className={classes.button} variant="contained" color="primary">Logout</Button>
+	    				
 	    				<TrainerTable users={new Array(userData)} ranking={ranking} />
 		    			{userData.pokemons.length > 0 ? <Pokedex trainerData={userData} /> : ''}
 	    			</>
