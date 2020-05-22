@@ -23,7 +23,7 @@ const useStyles = makeStyles({
 const IndexPage = () => {
 
 	const classes = useStyles();
-  const { firebase, loading } = useContext(FirebaseContext);
+  const { firebase } = useContext(FirebaseContext);
 
   return (
     <section>
