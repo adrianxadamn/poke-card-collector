@@ -60,7 +60,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	    dateString = dateString.split(' ').slice(0, 4).join(' ');
 	    currPokemon.date_caught = dateString;
 	    firebase.addCapturedPokemon(userData, setUserData, currPokemon);
-	    if ([...captured, currPokemon] === 151) {
+	    if ([...captured, currPokemon].length === 151) {
 	    	const stringDate = moment().format('ddd, DD MMMM YYYY h:mm:ss');
 	    	firebase.addCompletionDate(userData, stringDate);
 	    }	

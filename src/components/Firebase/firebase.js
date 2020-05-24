@@ -63,14 +63,20 @@ class Firebase {
   }
 
   async updateUserLoginDate(userData, date) {
-    return this.db.collection('users').doc(userData.username).update({
-      login_date: date
+    console.log("FUCKING UPDATE:", date);
+    console.log("userData.username:", userData.username);
+    this.db.collection('users').doc(userData.username).update({
+      last_login: date
+    }).then(() => {
+      console.log("updated!!");
     });
   }
 
   async addCompletionDate(userData, date) {
-    return this.db.collection('users').doc(userData.username).update({
+    this.db.collection('users').doc(userData.username).update({
       completion_time: date
+    }).then(() => {
+      console.log("updated!!");
     });
   }
 
