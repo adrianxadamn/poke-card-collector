@@ -59,7 +59,7 @@ const TrainerTable = ({users, ranking}) => {
 					<TableBody>
 						{
 							users.map((user, index) => {
-								const daysOld = moment().diff(user.creation_time, 'days');
+								const daysOld = user.completion_time ? moment().diff(user.creation_time, 'days') -  moment().diff(user.completion_time, 'days') + 1 : moment().diff(user.creation_time, 'days') + 1;
 								const completionTime = (user.completion_time ? moment(user.completion_time).format('MM/DD/YYYY') : 'N/A');
 								let colorClass = ''; 
 								let userRanking = index + 1;
