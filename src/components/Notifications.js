@@ -43,7 +43,7 @@ const Notifications = ({firebase}) => {
 	          ...doc.data()
 	        })
 	      });
-
+	      console.log("snapshotNotifications.reverse():", snapshotNotifications.reverse())
 	      setNotifications(snapshotNotifications.reverse());
 	    }
 	  })
