@@ -35,7 +35,7 @@ function useAuth() {
                         if (lastLoginDate !== todaysDate) {
                           firebaseInstance.updateUserLoginDate(r, stringDate);
                         }
-                        if (r.pokemons.length === 151 && r.completion_date === undefined) {
+                        if (r.pokemons.length === 151 && r.completion_time === undefined) {
                           firebaseInstance.addCompletionDate(r, stringDate);
                         } 
                       });
