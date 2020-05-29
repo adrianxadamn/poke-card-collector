@@ -1,8 +1,10 @@
 import React, { useState, useContext } from "react";
-import { Link, navigate } from "gatsby"
+import { Link } from "gatsby"
 import SEO from "../components/seo"
 
 import { FirebaseContext } from '../components/Firebase';
+
+import SelectStarter from '../components/SelectStarter';
 
 import { Container, TextField, Button, Card } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -32,10 +34,13 @@ const useStyles = makeStyles({
 const CreateAccount = () => {
 
 	const [formData, setformData] = useState({});
+	const [formCompleted, setFormCompleted] = useState(false);
 	const classes = useStyles();
 	const { firebase } = useContext(FirebaseContext);
 
 	const onRegister = async () => {
+		setFormCompleted(true);
+		
 		const {username, email, password} = formData;
 		try {
 			const usernameAlreadyExist = await firebase.usernameAlreadyExist(username);
@@ -45,7 +50,7 @@ const CreateAccount = () => {
 			}
 			const success = await firebase.register(username, email, password);
 			if (success) {
-				navigate('/account');
+				setFormCompleted(true);
 			}
 		} catch(error) {
 			console.log(error);
@@ -70,6 +75,10 @@ const CreateAccount = () => {
 	  <section>
 	    <SEO title="Create Account" />
 
+	    {formCompleted && 
+	    	<SelectStarter />
+	    }
+
 	    <Container maxWidth="sm">
 	    	<Card className={classes.card}>
 	    		<h1 className={classes.title}>Create Account</h1>
@@ -81,7 +90,6 @@ const CreateAccount = () => {
 	    			<span>Already have an account? Login <Link to="/login">here.</Link></span>
 		    	</form>
 	    	</Card>
-
 	    </Container>
 
 	    <Link to="/">Go back to the homepage</Link>
