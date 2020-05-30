@@ -12,6 +12,7 @@ import {FirebaseContext, useAuth} from './Firebase';
 
 import Header from "./header";
 import "./layout.css"
+import '../styles/index.scss';
 
 const Layout = ({ children }) => {
 
