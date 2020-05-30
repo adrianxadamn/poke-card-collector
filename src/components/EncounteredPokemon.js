@@ -54,7 +54,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 		const randomIndex = (Math.floor(Math.random() * dice.length));
 		const multiplier = dice[randomIndex] / 100 + 1;
 		setDiceBoost(multiplier);
-		setLogs([...logs, `you rolled a ${dice[randomIndex]}!`]);
+		setLogs([...logs, `you rolled a ${dice[randomIndex]}!`, `your dice boost multiplier is: ${diceBoost}x!`]);
 	};
 
 	const fightPokemon = async (id) => {
@@ -63,7 +63,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	  const caught = (pokemonCombatPower > currPokemon.combat_power) ? true : false;
 	  if (caught) {
 	    setCaptured([...captured, currPokemon]);
-	    setLogs([...logs, `your moral boost multiplier is: ${diceBoost}x!`, `your combat power is ${pokemonCombatPower}`, `you caught <span style="text-decoration: underline;">${currPokemon.name}</span>!`]);
+	    setLogs([...logs, `your combat power is ${pokemonCombatPower}`, `you caught <span style="text-decoration: underline;">${currPokemon.name}</span>!`, '---']);
 	    let dateString = new Date().toUTCString();
 	    dateString = dateString.split(' ').slice(0, 4).join(' ');
 	    currPokemon.date_caught = dateString;
@@ -73,7 +73,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	    	firebase.addCompletionDate(userData, stringDate);
 	    }	
 	  } else {
-	    setLogs([...logs, `your moral boost multiplier is: ${diceBoost}x!`, `your combat power is ${pokemonCombatPower}`, `could not capture <span style="text-decoration: underline;">${currPokemon.name}</span>`]);
+	    setLogs([...logs, `your dice boost multiplier is: ${diceBoost}x!`, `your combat power is ${pokemonCombatPower}`, `could not capture <span style="text-decoration: underline;">${currPokemon.name}</span>`, '---']);
 	  }
 	  const pokemonLeft = encountered.filter(pokemon => pokemon.id !== currPokemon.id);
 	  setEncountered(pokemonLeft);
@@ -93,10 +93,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	    const getRandomIndex = Math.floor(Math.random() * allPokemon.length); 
 	    const getRandomEncounterPerc = Math.floor(Math.random() * 100); 
 	    const currPokemon = allPokemon[getRandomIndex];
-	    console.log(`you rolled ${getRandomEncounterPerc}`);
 	    if (getRandomEncounterPerc + currPokemon.encounter_rate < 100) {
-	      console.log(`${currPokemon.name} flees from you`);
-	      setLogs([...logs, `you rolled ${getRandomEncounterPerc}`, `<span style="text-decoration: underline;">${currPokemon.name}</span> flees from you`]);
 	      continue;
 	    }
 	    const pokemonAlreadyFound = allEncounteredPokemon.some(pokemon => pokemon.id === currPokemon.id);
@@ -123,16 +120,22 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 		setPokeBoost(multiplier);
 	}, [captured]);
 
+	useEffect(() => {
+		if (encountered.length) {
+			setLogs([...logs, `you've encountered <span style="text-decoration: underline;">${encountered[0].name}</span>`]);
+		}
+	}, [encountered]);
+
 	return (
 		<>
 			<Button onClick={findPokemon} variant="contained" color="primary">Encounter Pokemon</Button>
 
 			{userActivePokemon && !!encountered.length && 
-				<>
+				<Card>
 					<Grid className={classes.battleContainer} container spacing={3}>
 						<Grid item xs={3}>
 							<h2>{userData.username}</h2>
-		      		<Card className={classes.card}>
+		      		<div className={classes.card}>
 		            <img className={classes.image} src={userActivePokemon.image} alt={userActivePokemon.name} />
 		            <h3>{userActivePokemon.name}</h3>
 		            {userActivePokemon.types.map((type, index) => {
@@ -142,26 +145,26 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 		            <p>DB: {diceBoost}x</p>
 		            <p>PB: {pokeBoost}x</p>
 		            <p>Total CP: {(userActivePokemon.combat_power * diceBoost * pokeBoost).toFixed(0)}</p>
-		      		</Card>
-		      		<Button onClick={rollDice} variant="contained" color="primary">Roll Dice</Button>
-		      		<Button onClick={fightPokemon.bind(this, encountered[0].id)} variant="contained" color="primary">Fight Pokemon</Button>
+		      		</div>
 						</Grid>
 						<Grid item xs={3}>
-							VS
+							<div>VS</div>
+							<Button onClick={rollDice} variant="contained" color="primary">Roll Dice</Button>
+							<Button onClick={fightPokemon.bind(this, encountered[0].id)} variant="contained" color="primary">Fight Pokemon</Button>
 						</Grid>
 						<Grid item xs={3}>
 							<h2>Wild Pokemon</h2>
-		      		<Card className={classes.card}>
+		      		<div className={classes.card}>
 		            <img className={classes.image} src={encountered[0].image} alt={encountered[0].name} />
 		            <h3>{encountered[0].name}</h3>
 		            {encountered[0].types.map((type, index) => {
 		            	return <p key={index}>{type}</p>
 		            })}
 		            <p>CP {encountered[0].combat_power}</p>
-		      		</Card>
+		      		</div>
 						</Grid>
 					</Grid>
-				</>
+				</Card>
 			}
 		</>
 	);
