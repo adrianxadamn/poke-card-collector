@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from "gatsby";
 import moment from 'moment';
+import classNames from 'classnames';
 
 import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -33,6 +34,14 @@ const useStyles = makeStyles({
 	bronzeColor: {
 		color: '#8C7853',
 		fontWeight: '700'
+	},
+	nameContainer: {
+		display: 'flex',
+		alignItems: 'center'
+	},
+	activePokemonImage: {
+		width: '48px',
+		margin: '0 0 0 -15px'
 	}
 });
 
@@ -61,6 +70,10 @@ const TrainerTable = ({users, ranking}) => {
 							users.map((user, index) => {
 								const daysOld = user.completion_time ? moment().diff(user.creation_time, 'days') -  moment().diff(user.completion_time, 'days') + 1 : moment().diff(user.creation_time, 'days') + 1;
 								const completionTime = (user.completion_time ? moment(user.completion_time).format('MM/DD/YYYY') : 'N/A');
+								let activePokemon = user.pokemons.filter(pokemon => pokemon.active_pokemon)[0];
+								if (activePokemon === undefined) {
+									activePokemon = user.pokemons[0];
+								}
 								let colorClass = ''; 
 								let userRanking = index + 1;
 								if (users.length === 1) {
@@ -77,8 +90,9 @@ const TrainerTable = ({users, ranking}) => {
 	  							<TableRow hover key={user.user_id}>
 	    							<TableCell className={colorClass}>{userRanking}</TableCell>
 	    							<TableCell>
-	    								<Link className={colorClass} to={`/trainers/${user.username}`}>
-	    									{user.username}
+	    								<Link className={classNames(colorClass, classes.nameContainer)} to={`/trainers/${user.username}`}>
+    										<img className={classes.activePokemonImage} src={activePokemon.image} alt={activePokemon.name} />
+	    									<span>{user.username}</span>
 	    								</Link>
 	    							</TableCell>
 	    							{user.pokemons.length > 0 ? 
