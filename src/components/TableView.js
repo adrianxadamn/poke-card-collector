@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from "react";
-
 import { Table, TableBody, TableCell, TableSortLabel, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -9,6 +8,10 @@ const useStyles = makeStyles({
 	},
 	image: {
 		marginBottom: 0
+	},
+	isActive: {
+		borderTop: '2px solid black',
+		borderBottom: '2px solid black'
 	}
 });
 
@@ -61,7 +64,7 @@ const TableView = ({pokemons, setPokemons}) => {
 					{ 
 						pokemons.map(pokemon => {
 							return (
-								<TableRow id={pokemon.id} key={pokemon.id} hover>
+								<TableRow className={pokemon.active_pokemon ? classes.isActive : ''} id={pokemon.id} key={pokemon.id} hover>
 									<TableCell><img className={classes.image} src={pokemon.image} alt={pokemon.name} /></TableCell>
 									<TableCell>{pokemon.name}</TableCell>
 									<TableCell>#{pokemon.id}</TableCell>

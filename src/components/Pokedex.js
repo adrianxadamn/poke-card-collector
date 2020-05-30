@@ -21,11 +21,6 @@ const useStyles = makeStyles({
 		maxWidth: '280px',
 		height: '46px',
 		margin: '0 auto'
-	},
-	pokemonCard: {
-		padding: '20px',
-		boxShadow: 'none',
-		border: '1px solid black'
 	}
 });
 

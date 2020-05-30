@@ -78,17 +78,19 @@ class Firebase {
     });
   }
 
-  async addCapturedPokemon(userData, setUserData, pokemon) {
+  async addCapturedPokemon(userData, setUserData, pokemon, isStarter) {
+    pokemon['active_pokemon'] = (isStarter) ? true : false;
     let capturedPokemon = [pokemon]; 
     if (userData.pokemons !== undefined) {
       capturedPokemon = [...userData.pokemons, pokemon].filter(pokemon => pokemon !== undefined);   
     } 
-    this.db.collection('users').doc(userData.username).update({
+    return this.db.collection('users').doc(userData.username).update({
       pokemons: capturedPokemon
     }).then((res) => {
       const newUserData = Object.assign({}, userData);
       newUserData.pokemons = capturedPokemon;
       setUserData(newUserData);
+      return true;
     });
   }
 
