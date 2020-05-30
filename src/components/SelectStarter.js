@@ -48,6 +48,8 @@ const SelectStarter = () => {
 	          image
 	          encounter_rate
 	          capture_rate
+	          combat_power
+	          types
 	        } 
 	      } 
 	    }
@@ -66,6 +68,7 @@ const SelectStarter = () => {
 	};
 
 	useEffect(() => {
+		// there's a loading issue here - you really need to fix it
 		if (userData !== null) {
 			setOpen(true);
 		}
