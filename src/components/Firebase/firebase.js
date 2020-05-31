@@ -78,6 +78,19 @@ class Firebase {
     });
   }
 
+  async selectActivePokemon(userData, setUserData, pokemonSelected) {
+    const currActivePokemonIndex = userData.pokemons.findIndex(pokemon => pokemon.active_pokemon);
+    const selectedActivePokemonIndex = userData.pokemons.findIndex(pokemon => pokemon.id === pokemonSelected.id);
+    userData.pokemons[currActivePokemonIndex].active_pokemon = false;
+    userData.pokemons[selectedActivePokemonIndex].active_pokemon = true;
+    return this.db.collection('users').doc(userData.username).update({
+      pokemons: [...userData.pokemons]
+    }).then(() => {
+      const newUserData = Object.assign({}, userData);
+      setUserData(newUserData);
+    });
+  }
+
   async addCapturedPokemon(userData, setUserData, pokemon, isStarter) {
     pokemon['active_pokemon'] = (isStarter) ? true : false;
     let capturedPokemon = [pokemon]; 
@@ -86,7 +99,7 @@ class Firebase {
     } 
     return this.db.collection('users').doc(userData.username).update({
       pokemons: capturedPokemon
-    }).then((res) => {
+    }).then(() => {
       const newUserData = Object.assign({}, userData);
       newUserData.pokemons = capturedPokemon;
       setUserData(newUserData);
