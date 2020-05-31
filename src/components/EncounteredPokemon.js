@@ -25,7 +25,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	const { firebase, userData, setUserData } = useContext(FirebaseContext);
 
 	const [encountered, setEncountered] = useState([]);
-	const [userActivePokemon, setUserActivePokemon] = useState({});
+	const [userActivePokemon, setUserActivePokemon] = useState(null);
 	const [diceBoost, setDiceBoost] = useState(1);
 	const [pokeBoost, setPokeBoost] = useState(1);
 	const [elementalBoost, setElementalBoost] = useState(0);
@@ -131,7 +131,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	}, [captured]);
 
 	useEffect(() => {
-		if (encountered.length) {
+		if (encountered.length && userActivePokemon) {
 			const activePokemonTypes = userActivePokemon.types.map(type => type);
 			const wildPokemonTypes = encountered[0].types.map(type => type);
 			const isEffective = getElementalAdvantage(activePokemonTypes, wildPokemonTypes, 'superEffective').flat();
@@ -150,45 +150,48 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 
 	return (
 		<>
-			<Button onClick={findPokemon} variant="contained" color="primary">Encounter Pokemon</Button>
-
-			{userActivePokemon && !!encountered.length && 
-				<Card>
-					<Grid className={classes.battleContainer} container spacing={3}>
-						<Grid item xs={3}>
-							<h2>{userData.username}</h2>
-		      		<div className={classes.card}>
-		            <img className={classes.image} src={userActivePokemon.image} alt={userActivePokemon.name} />
-		            <h3>{userActivePokemon.name}</h3>
-		            <div>
-			            {userActivePokemon.types.map((type, index) => {
-			            	return <span className={`element element--${type}`} key={index}>{type}</span>
-			            })}
-		            </div>
-		            <p>CP {userActivePokemon.combat_power * elementalBoost} <span className={'elemental-advatange'}>({(elementalBoost - 1 > 0 ? '+' : '' )}{(elementalBoost - 1) * 100}%)</span></p>
-		            <p>DB: {diceBoost}x</p>
-		            <p>PB: {pokeBoost}x</p>
-		            <p>Total CP: {(userActivePokemon.combat_power * diceBoost * pokeBoost * elementalBoost).toFixed(0)}</p>
-		      		</div>
+			{userData && userActivePokemon && 
+					<Card>
+						<Button onClick={findPokemon} variant="contained" color="primary">Encounter Pokemon</Button>
+						<Grid className={classes.battleContainer} container spacing={3}>
+							<Grid item xs={3}>
+								<h2>{userData.username}</h2>
+			      		<div className={classes.card}>
+			            <img className={classes.image} src={userActivePokemon.image} alt={userActivePokemon.name} />
+			            <h3>{userActivePokemon.name}</h3>
+			            <div>
+				            {userActivePokemon.types.map((type, index) => {
+				            	return <span className={`element element--${type}`} key={index}>{type}</span>
+				            })}
+			            </div>
+			            <p>CP {userActivePokemon.combat_power * elementalBoost} <span className={'elemental-advatange'}>({(elementalBoost - 1 > 0 ? '+' : '' )}{(elementalBoost - 1) * 100}%)</span></p>
+			            <p>DB: {diceBoost}x</p>
+			            <p>PB: {pokeBoost}x</p>
+			            <p>Total CP: {(userActivePokemon.combat_power * diceBoost * pokeBoost * elementalBoost).toFixed(0)}</p>
+			      		</div>
+							</Grid>
+							{!!encountered.length &&
+								<>
+									<Grid item xs={3}>
+										<div>VS</div>
+										<Button onClick={rollDice} variant="contained" color="primary">Roll Dice</Button>
+										<Button onClick={fightPokemon.bind(this, encountered[0].id)} variant="contained" color="primary">Fight Pokemon</Button>
+									</Grid>
+									<Grid item xs={3}>
+										<h2>Wild Pokemon</h2>
+					      		<div className={classes.card}>
+					            <img className={classes.image} src={encountered[0].image} alt={encountered[0].name} />
+					            <h3>{encountered[0].name}</h3>
+					            {encountered[0].types.map((type, index) => {
+					            	return <span className={`element element--${type}`} key={index}>{type}</span>
+					            })}
+					            <p>CP {encountered[0].combat_power}</p>
+					      		</div>
+									</Grid>
+								</>
+							}
 						</Grid>
-						<Grid item xs={3}>
-							<div>VS</div>
-							<Button onClick={rollDice} variant="contained" color="primary">Roll Dice</Button>
-							<Button onClick={fightPokemon.bind(this, encountered[0].id)} variant="contained" color="primary">Fight Pokemon</Button>
-						</Grid>
-						<Grid item xs={3}>
-							<h2>Wild Pokemon</h2>
-		      		<div className={classes.card}>
-		            <img className={classes.image} src={encountered[0].image} alt={encountered[0].name} />
-		            <h3>{encountered[0].name}</h3>
-		            {encountered[0].types.map((type, index) => {
-		            	return <span className={`element element--${type}`} key={index}>{type}</span>
-		            })}
-		            <p>CP {encountered[0].combat_power}</p>
-		      		</div>
-						</Grid>
-					</Grid>
-				</Card>
+					</Card>
 			}
 		</>
 	);
