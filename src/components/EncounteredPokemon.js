@@ -59,24 +59,25 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	};
 
 	const fightPokemon = async (id) => {
-	  const currPokemon = allPokemon.find(pokemon => pokemon.id === id);
+	  const wildPokemon = allPokemon.find(pokemon => pokemon.id === id);
+	  // wild pokemon should have boosted stats as well for elemental advantage
 	  const pokemonCombatPower = (userActivePokemon.combat_power * diceBoost * pokeBoost * elementalBoost).toFixed(0);
-	  const caught = (pokemonCombatPower > currPokemon.combat_power) ? true : false;
+	  const caught = (pokemonCombatPower > wildPokemon.combat_power) ? true : false;
 	  if (caught) {
-	    setCaptured([...captured, currPokemon]);
-	    setLogs([...logs, `your combat power is ${pokemonCombatPower}`, `you caught <span style="text-decoration: underline;">${currPokemon.name}</span>!`, '---']);
+	    setCaptured([...captured, wildPokemon]);
+	    setLogs([...logs, `your combat power is ${pokemonCombatPower}`, `you caught <span style="text-decoration: underline;">${wildPokemon.name}</span>!`]);
 	    let dateString = new Date().toUTCString();
 	    dateString = dateString.split(' ').slice(0, 4).join(' ');
-	    currPokemon.date_caught = dateString;
-	    firebase.addCapturedPokemon(userData, setUserData, currPokemon);
-	    if ([...captured, currPokemon].length === 151) {
+	    wildPokemon.date_caught = dateString;
+	    firebase.addCapturedPokemon(userData, setUserData, wildPokemon);
+	    if ([...captured, wildPokemon].length === 151) {
 	    	const stringDate = moment().format('ddd, DD MMMM YYYY h:mm:ss');
 	    	firebase.addCompletionDate(userData, stringDate);
 	    }	
 	  } else {
-	    setLogs([...logs, `your dice boost multiplier is: ${diceBoost}x!`, `your combat power is ${pokemonCombatPower}`, `could not capture <span style="text-decoration: underline;">${currPokemon.name}</span>`, '---']);
+	    setLogs([...logs, `your dice boost multiplier is: ${diceBoost}x!`, `your combat power is ${pokemonCombatPower}`, `could not capture <span style="text-decoration: underline;">${wildPokemon.name}</span>`, '---']);
 	  }
-	  const pokemonLeft = encountered.filter(pokemon => pokemon.id !== currPokemon.id);
+	  const pokemonLeft = encountered.filter(pokemon => pokemon.id !== wildPokemon.id);
 	  setEncountered(pokemonLeft);
 	  setDiceBoost(1);
 	};
@@ -114,7 +115,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 			return wildPokemonTypes.filter(wildPokemonType => {
 				return ElementalTypes[activePokemonType][keyName].includes(wildPokemonType);
 			});
-		})[0]; 
+		}); 
 	};
 
 	useEffect(() => {
@@ -133,18 +134,19 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 		if (encountered.length) {
 			const activePokemonTypes = userActivePokemon.types.map(type => type);
 			const wildPokemonTypes = encountered[0].types.map(type => type);
-			const isEffective = getElementalAdvantage(activePokemonTypes, wildPokemonTypes, 'superEffective');
-			const isNotEffective = getElementalAdvantage(activePokemonTypes, wildPokemonTypes, 'notEffective');
-			const hasNoDamage = getElementalAdvantage(activePokemonTypes, wildPokemonTypes, 'noDamage');
+			const isEffective = getElementalAdvantage(activePokemonTypes, wildPokemonTypes, 'superEffective').flat();
+			const isNotEffective = getElementalAdvantage(activePokemonTypes, wildPokemonTypes, 'notEffective').flat();
+			const hasNoDamage = getElementalAdvantage(activePokemonTypes, wildPokemonTypes, 'noDamage').flat();
 			if (hasNoDamage.length > 0) {
 				setElementalBoost(0);
 			} else {
 				const multiplier = (isEffective.length - isNotEffective.length) / 4 + 1;
+				console.log("multiplier:", multiplier);
 				setElementalBoost(multiplier);
 			}
-			setLogs([...logs, `you've encountered <span style="text-decoration: underline;">${encountered[0].name}</span>`]);
+			setLogs([`you've encountered <span style="text-decoration: underline;">${encountered[0].name}</span>`]);
 		}
-	}, [encountered]);
+	}, [userActivePokemon, encountered, setLogs]);
 
 	return (
 		<>
@@ -163,7 +165,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 			            	return <span className={`element element--${type}`} key={index}>{type}</span>
 			            })}
 		            </div>
-		            <p>CP {userActivePokemon.combat_power * elementalBoost} <span className={'elemental-advatange'}>({(elementalBoost - 1) * 100}%+)</span></p>
+		            <p>CP {userActivePokemon.combat_power * elementalBoost} <span className={'elemental-advatange'}>({(elementalBoost - 1 > 0 ? '+' : '' )}{(elementalBoost - 1) * 100}%)</span></p>
 		            <p>DB: {diceBoost}x</p>
 		            <p>PB: {pokeBoost}x</p>
 		            <p>Total CP: {(userActivePokemon.combat_power * diceBoost * pokeBoost * elementalBoost).toFixed(0)}</p>
