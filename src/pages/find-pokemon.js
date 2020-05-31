@@ -62,9 +62,7 @@ const FindPokemon = () => {
 	    		return (
 	    			<Grid container spacing={3}>
 	    				<Grid item xs={9}>
-	    					<Card className={classes.card}>
-				    			<EncounteredPokemon captured={captured} setCaptured={setCaptured} logs={logs} setLogs={setLogs} />
-				    		</Card>
+				    		<EncounteredPokemon captured={captured} setCaptured={setCaptured} logs={logs} setLogs={setLogs} />
 				    	</Grid>
 				    	<Grid item xs={3}>
 				    		<Card className={classes.card}>

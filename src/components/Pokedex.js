@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 });
 
 
-const Pokedex = ({trainerData}) => {
+const Pokedex = ({trainerData, setUserData}) => {
 	
 	const classes = useStyles();
 
@@ -53,7 +53,7 @@ const Pokedex = ({trainerData}) => {
 					)
 				} else {
 					return (
-						<TableView pokemons={pokemons} setPokemons={setPokemons}></TableView>
+						<TableView trainerData={trainerData} setUserData={setUserData} pokemons={pokemons} setPokemons={setPokemons}></TableView>
 					)
 				}
 			})()}

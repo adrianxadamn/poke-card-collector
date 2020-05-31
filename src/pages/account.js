@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 
 const Account = () => {
 	const classes = useStyles();
-	const { user, firebase, loading, userData } = useContext(FirebaseContext);
+	const { user, firebase, loading, userData, setUserData } = useContext(FirebaseContext);
 	const [ranking, setRanking] = useState('');
 
 	const logout = () => {
@@ -57,7 +57,7 @@ const Account = () => {
 	    				<Button onClick={logout} type="submit" className={classes.button} variant="contained" color="primary">Logout</Button>
 	    				
 	    				<TrainerTable users={new Array(userData)} ranking={ranking} />
-		    			{userData.pokemons.length > 0 ? <Pokedex trainerData={userData} /> : ''}
+		    			{userData.pokemons.length > 0 ? <Pokedex trainerData={userData} setUserData={setUserData} /> : ''}
 	    			</>
 	    		);
 	    	}

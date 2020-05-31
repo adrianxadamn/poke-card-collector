@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import SEO from "../components/seo";
-
 import { Link } from 'gatsby';
 
 import { FirebaseContext } from '../components/Firebase';
