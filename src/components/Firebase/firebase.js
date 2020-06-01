@@ -120,6 +120,8 @@ class Firebase {
     activePokemon['losses'] = activePokemon['losses'] + 1;
     return this.db.collection('users').doc(userData.username).update({
       pokemons: pokemons
+    }).then(() => {
+      return true;
     });
   }
 

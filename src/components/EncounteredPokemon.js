@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import { useStaticQuery, graphql } from "gatsby";
 import moment from 'moment';
 import { FirebaseContext } from '../components/Firebase';
@@ -29,7 +29,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	const [userDiceBoost, setUserDiceBoost] = useState(1);
 	const [userPokeBoost, setUserPokeBoost] = useState(1);
 	const [userElementalBoost, setUserElementalBoost] = useState(0);
-
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [wildDiceBoost, setWildDiceBoost] = useState(1);
 	const [wildElementalBoost, setWildElementalBoost] = useState(0);
@@ -54,6 +54,13 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 
 	const allPokemon = data.site.siteMetadata.pokemon;
 
+	const resetState = () => {
+		setUserDiceBoost(1);
+		setUserElementalBoost(0);
+		setWildElementalBoost(0);
+		setIsLoading(false);
+	};
+
 	const rollDice = () => {
 		const dice = [1, 2, 2, 3, 3, 4];
 		const randomIndex = (Math.floor(Math.random() * dice.length));
@@ -63,28 +70,29 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	};
 
 	const fightPokemon = async (id) => {
+		setIsLoading(true);
 	  const wildPokemon = allPokemon.find(pokemon => pokemon.id === id);
-	  const wildPokemonCP = (wildPokemon.combat_power * wildElementalBoost).toFixed(0);
-	  const pokemonCP = (userActivePokemon.combat_power * userDiceBoost * userPokeBoost * userElementalBoost).toFixed(0);
+	  const wildPokemonCP = (wildPokemon.combat_power * wildElementalBoost);
+	  const pokemonCP = (userActivePokemon.combat_power * userDiceBoost * userPokeBoost * userElementalBoost);
 	  const caught = (pokemonCP > wildPokemonCP) ? true : false;
 	  if (caught) {
 	    setCaptured([...captured, wildPokemon]);
-	    setLogs([...logs, `your combat power is ${pokemonCP}`, `you caught <span style="text-decoration: underline;">${wildPokemon.name}</span>!`]);
+	    setLogs([...logs, `your combat power is ${pokemonCP.toFixed(0)}`, `you caught <span style="text-decoration: underline;">${wildPokemon.name}</span>!`]);
 	    let dateString = new Date().toUTCString();
 	    dateString = dateString.split(' ').slice(0, 4).join(' ');
 	    wildPokemon.date_caught = dateString;
-	    firebase.addCapturedPokemon(userData, setUserData, wildPokemon);
+	    await firebase.addCapturedPokemon(userData, setUserData, wildPokemon);
 	    if ([...captured, wildPokemon].length === 151) {
 	    	const stringDate = moment().format('ddd, DD MMMM YYYY h:mm:ss');
-	    	firebase.addCompletionDate(userData, stringDate);
-	    }	
+	    	await firebase.addCompletionDate(userData, stringDate);
+	    }
 	  } else {
-	  	firebase.updateBattleLosses(userData);
-	    setLogs([...logs, `your dice boost multiplier is: ${userDiceBoost}x!`, `your combat power is ${pokemonCP}`, `could not capture <span style="text-decoration: underline;">${wildPokemon.name}</span>`, '---']);
+	  	await firebase.updateBattleLosses(userData);
+	    setLogs([...logs, `your dice boost multiplier is: ${userDiceBoost}x!`, `your combat power is ${pokemonCP.toFixed(0)}`, `could not capture <span style="text-decoration: underline;">${wildPokemon.name}</span>`, '---']);
 	  }
 	  const pokemonLeft = encountered.filter(pokemon => pokemon.id !== wildPokemon.id);
-	  setEncountered(pokemonLeft);
-	  setUserDiceBoost(1);
+	  setEncountered([...pokemonLeft]);
+	  resetState();
 	};
 
 	const findPokemon = () => {
@@ -123,7 +131,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 		}); 
 	};
 
-	const getPlayerElementalAdvantage = (pokemonA, pokemonB, player) => {
+	const getPlayerElementalAdvantage = useCallback((pokemonA, pokemonB, player) => {
 		const isEffective = getElementalAdvantage(pokemonA, pokemonB, 'superEffective').flat();
 		const isNotEffective = getElementalAdvantage(pokemonA, pokemonB, 'notEffective').flat();
 		const hasNoDamage = getElementalAdvantage(pokemonA, pokemonB, 'noDamage').flat();
@@ -141,7 +149,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 				setWildElementalBoost(multiplier);
 			}
 		}
-	};
+	}, []);
 
 	useEffect(() => {
 		if (userData !== null) {
@@ -156,14 +164,14 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	}, [captured]);
 
 	useEffect(() => {
-		if (encountered.length && userActivePokemon) {
+		if (encountered.length && userActivePokemon && !isLoading) {
 			const activePokemonTypes = userActivePokemon.types.map(type => type);
 			const wildPokemonTypes = encountered[0].types.map(type => type);
 			getPlayerElementalAdvantage(activePokemonTypes, wildPokemonTypes, 'user');
 			getPlayerElementalAdvantage(wildPokemonTypes, activePokemonTypes, 'opponent');
 			setLogs([`you've encountered <span style="text-decoration: underline;">${encountered[0].name}</span>`]);
 		}
-	}, [userActivePokemon, encountered, setLogs]);
+	}, [userActivePokemon, encountered, setLogs, isLoading, getPlayerElementalAdvantage]);
 
 	return (
 		<>
@@ -187,9 +195,9 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 					            	<span>CP {(userActivePokemon.combat_power * userElementalBoost).toFixed(0)}</span> 
 					            	{(() => {
 					            		if (userElementalBoost - 1 > 0) {
-					            			return <span class="elemental-advatange">(+{(userElementalBoost - 1) * 100}%)</span>;
+					            			return <span className="elemental-advatange">(+{(userElementalBoost - 1) * 100}%)</span>;
 					            		} else if (userElementalBoost - 1 < 0) {
-					            			return <span class="elemental-disadvantage">({(userElementalBoost - 1) * 100}%)</span>;
+					            			return <span className="elemental-disadvantage">({(userElementalBoost - 1) * 100}%)</span>;
 					            		}
 					            	})()}
 					            </p>
@@ -200,7 +208,7 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 			            }
 			      		</div>
 							</Grid>
-							{!!encountered.length &&
+							{!!encountered.length && !isLoading &&
 								<>
 									<Grid item xs={3}>
 										<div>VS</div>
@@ -219,9 +227,9 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 					            	<span>CP {(encountered[0].combat_power * wildElementalBoost).toFixed(0)}</span>
 					            	{(() => {
 					            		if (wildElementalBoost - 1 > 0) {
-					            			return <span class="elemental-advatange">(+{(wildElementalBoost - 1) * 100}%)</span>;
+					            			return <span className="elemental-advatange">(+{(wildElementalBoost - 1) * 100}%)</span>;
 					            		} else if (wildElementalBoost - 1 < 0) {
-					            			return <span class="elemental-disadvantage">({(wildElementalBoost - 1) * 100}%)</span>;
+					            			return <span className="elemental-disadvantage">({(wildElementalBoost - 1) * 100}%)</span>;
 					            		}
 					            	})()}
 					            </p>
