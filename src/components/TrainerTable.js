@@ -59,6 +59,7 @@ const TrainerTable = ({users, ranking}) => {
 							<TableCell>Name</TableCell>
 							<TableCell>Pokedex</TableCell>
 							<TableCell>Completion</TableCell>
+							<TableCell>W/L/T</TableCell>
 							<TableCell>Elapsed Time</TableCell>
 							<TableCell>Date Joined</TableCell>
 							<TableCell>Date Completed</TableCell>
@@ -70,6 +71,10 @@ const TrainerTable = ({users, ranking}) => {
 							users.map((user, index) => {
 								const daysOld = user.completion_time ? moment().diff(user.creation_time, 'days') -  moment().diff(user.completion_time, 'days') + 1 : moment().diff(user.creation_time, 'days') + 1;
 								const completionTime = (user.completion_time ? moment(user.completion_time).format('MM/DD/YYYY') : 'N/A');
+								
+								const totalWins = user.pokemons.reduce((a, b) => a + b.wins, 0);
+								const totalLosses = user.pokemons.reduce((a, b) => a + b.losses, 0);
+
 								let activePokemon = user.pokemons.filter(pokemon => pokemon.active_pokemon)[0];
 								if (activePokemon === undefined) {
 									activePokemon = user.pokemons[0];
@@ -105,6 +110,7 @@ const TrainerTable = ({users, ranking}) => {
 	    								: 
 	    								<TableCell>0%</TableCell>
 	    							}
+	    							<TableCell>{totalWins}/{totalLosses}/{totalWins + totalLosses}</TableCell>
 	    							<TableCell>{daysOld} Day{daysOld === 1 ? '' : 's'}</TableCell>
 	    							<TableCell>{moment(user.creation_time).format('MM/DD/YYYY')}</TableCell>
 	    							<TableCell>{completionTime}</TableCell>

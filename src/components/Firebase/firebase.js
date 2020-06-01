@@ -93,9 +93,15 @@ class Firebase {
 
   async addCapturedPokemon(userData, setUserData, pokemon, isStarter) {
     pokemon['active_pokemon'] = (isStarter) ? true : false;
+    pokemon['wins'] = 0;
+    pokemon['losses'] = 0;
     let capturedPokemon = [pokemon]; 
     if (userData.pokemons !== undefined) {
-      capturedPokemon = [...userData.pokemons, pokemon].filter(pokemon => pokemon !== undefined);   
+      capturedPokemon = [...userData.pokemons, pokemon].filter(pokemon => pokemon !== undefined);
+      if (!isStarter) {
+        const activePokemonIndex = capturedPokemon.findIndex(pokemon => pokemon['active_pokemon'] === true);
+        capturedPokemon[activePokemonIndex]['wins'] = (capturedPokemon[activePokemonIndex]['wins'] !== undefined) ? capturedPokemon[activePokemonIndex]['wins'] + 1 : 1; 
+      }
     } 
     return this.db.collection('users').doc(userData.username).update({
       pokemons: capturedPokemon
@@ -104,6 +110,16 @@ class Firebase {
       newUserData.pokemons = capturedPokemon;
       setUserData(newUserData);
       return true;
+    });
+  }
+
+  async updateBattleLosses(userData) {    
+    const pokemons = [...userData.pokemons];
+    const activePokemonIndex = pokemons.findIndex(pokemon => pokemon['active_pokemon'] === true);
+    const activePokemon = pokemons[activePokemonIndex];
+    activePokemon['losses'] = activePokemon['losses'] + 1;
+    return this.db.collection('users').doc(userData.username).update({
+      pokemons: pokemons
     });
   }
 
