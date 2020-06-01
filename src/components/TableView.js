@@ -56,7 +56,7 @@ const TableView = ({trainerData, setUserData, pokemons, setPokemons}) => {
 			return b['active_pokemon'] - a['active_pokemon'];
 		});
 		setPokemons(sortedPokemons);
-	}, [setPokemons, pokemons]);
+	}, [pokemons, setPokemons]);
 
 	return (
 		<TableContainer>
