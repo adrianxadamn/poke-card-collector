@@ -150,27 +150,18 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	const getPlayerElementalAdvantage = useCallback((pokemonA, pokemonB, player) => {
 		const isEffective = getElementalAdvantage(pokemonA, pokemonB, 'superEffective').flat();
 		const isNotEffective = getElementalAdvantage(pokemonA, pokemonB, 'notEffective').flat();
-		const hasNoDamage = getElementalAdvantage(pokemonA, pokemonB, 'noDamage').flat();
-		if (hasNoDamage.length > 0) {
-			if (player === 'user') {
-				setUserElementalBoost(0);
-			} else {
-				setWildElementalBoost(0);
-			}
-		} else {
-			const difference = (isEffective.length - isNotEffective.length > 0) ? 'positive' : 'negative';
-			let percentage = 0;
-			if (difference === 'positive') {
-				percentage = getTierLevel(pokemonA.combat_power);
-			} else if (difference === 'negative') {
-				percentage = getTierLevel(pokemonB.combat_power);
-			}
-			const multiplier = (isEffective.length - isNotEffective.length) / percentage + 1;
-			if (player === 'user') {
-				setUserElementalBoost(multiplier);
-			} else if ('opponent') {
-				setWildElementalBoost(multiplier);
-			}
+		const difference = (isEffective.length - isNotEffective.length > 0) ? 'positive' : 'negative';
+		let percentage = 0;
+		if (difference === 'positive') {
+			percentage = getTierLevel(pokemonA.combat_power);
+		} else if (difference === 'negative') {
+			percentage = getTierLevel(pokemonB.combat_power);
+		}
+		const multiplier = (isEffective.length - isNotEffective.length) / percentage + 1;
+		if (player === 'user') {
+			setUserElementalBoost(multiplier);
+		} else if ('opponent') {
+			setWildElementalBoost(multiplier);
 		}
 	}, []);
 
