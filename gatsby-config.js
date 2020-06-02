@@ -14,7 +14,7 @@ module.exports = {
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
         encounter_rate: 70,
         capture_rate: 70,
-        combat_power: 1115,
+        combat_power: 1050,
         types: ['poison', 'grass']
       },
       {
@@ -23,7 +23,7 @@ module.exports = {
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png',
         encounter_rate: 60,
         capture_rate: 60,
-        combat_power: 1699,
+        combat_power: 1899,
         types: ['poison', 'grass']
       },
       {
@@ -32,7 +32,7 @@ module.exports = {
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png',
         encounter_rate: 40,
         capture_rate: 40,
-        combat_power: 2720,
+        combat_power: 3020,
         types: ['poison', 'grass']
       },
       {
@@ -41,7 +41,7 @@ module.exports = {
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png',
         encounter_rate: 70,
         capture_rate: 70,
-        combat_power: 980,
+        combat_power: 1050,
         types: ['fire']
       },
       {
@@ -50,7 +50,7 @@ module.exports = {
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png',
         encounter_rate: 60,
         capture_rate: 60,
-        combat_power: 1653,
+        combat_power: 1853,
         types: ['fire']
       },
       {
@@ -59,7 +59,7 @@ module.exports = {
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png',
         encounter_rate: 40,
         capture_rate: 40,
-        combat_power: 2889,
+        combat_power: 3189,
         types: ['flying', 'fire']
       },
       {
@@ -68,7 +68,7 @@ module.exports = {
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png',
         encounter_rate: 75,
         capture_rate: 75,
-        combat_power: 946,
+        combat_power: 1050,
         types: ['water']
       },
       {
@@ -77,7 +77,7 @@ module.exports = {
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/8.png',
         encounter_rate: 70,
         capture_rate: 70,
-        combat_power: 1488,
+        combat_power: 1688,
         types: ['water']
       },
       {
@@ -86,7 +86,7 @@ module.exports = {
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png',
         encounter_rate: 50,
         capture_rate: 50,
-        combat_power: 2466,
+        combat_power: 3066,
         types: ['water']
       },
       {
@@ -230,7 +230,7 @@ module.exports = {
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
         encounter_rate: 70,
         capture_rate: 70,
-        combat_power: 938,
+        combat_power: 1050,
         types: ['electric']
       },
       {

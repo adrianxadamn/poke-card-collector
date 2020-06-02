@@ -69,6 +69,20 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 		setLogs([...logs, `you rolled a ${dice[randomIndex]}!`, `your dice boost multiplier is: ${userDiceBoost}x!`]);
 	};
 
+	const getTierLevel = (combatPower) => {
+		if (combatPower > 4000) {
+			return (100 / 25);
+		} else if (combatPower > 3000) {
+			return (100 / 20);
+		} else if (combatPower > 2000) {
+			return (100 / 15);
+		} else if (combatPower > 1000) {
+			return (100 / 10);
+		} else {
+			return (100 / 5);
+		}
+	};
+
 	const fightPokemon = async (id) => {
 		setIsLoading(true);
 	  const wildPokemon = allPokemon.find(pokemon => pokemon.id === id);
@@ -123,7 +137,9 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 	  setEncountered(allEncounteredPokemon);
 	}; 
 
-	const getElementalAdvantage = (pokemonATypes, pokemonBTypes, keyName) => {
+	const getElementalAdvantage = (pokemonA, pokemonB, keyName) => {
+		const pokemonATypes = pokemonA.types.map(type => type);
+		const pokemonBTypes = pokemonB.types.map(type => type);
 		return pokemonATypes.map(pokemonAType => {
 			return pokemonBTypes.filter(pokemonBType => {
 				return ElementalTypes[pokemonAType][keyName].includes(pokemonBType);
@@ -142,7 +158,14 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 				setWildElementalBoost(0);
 			}
 		} else {
-			const multiplier = (isEffective.length - isNotEffective.length) / 4 + 1;
+			const difference = (isEffective.length - isNotEffective.length > 0) ? 'positive' : 'negative';
+			let percentage = 0;
+			if (difference === 'positive') {
+				percentage = getTierLevel(pokemonA.combat_power);
+			} else if (difference === 'negative') {
+				percentage = getTierLevel(pokemonB.combat_power);
+			}
+			const multiplier = (isEffective.length - isNotEffective.length) / percentage + 1;
 			if (player === 'user') {
 				setUserElementalBoost(multiplier);
 			} else if ('opponent') {
@@ -165,10 +188,8 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 
 	useEffect(() => {
 		if (encountered.length && userActivePokemon && !isLoading) {
-			const activePokemonTypes = userActivePokemon.types.map(type => type);
-			const wildPokemonTypes = encountered[0].types.map(type => type);
-			getPlayerElementalAdvantage(activePokemonTypes, wildPokemonTypes, 'user');
-			getPlayerElementalAdvantage(wildPokemonTypes, activePokemonTypes, 'opponent');
+			getPlayerElementalAdvantage(userActivePokemon, encountered[0], 'user');
+			getPlayerElementalAdvantage(encountered[0], userActivePokemon, 'opponent');
 			setLogs([`you've encountered <span style="text-decoration: underline;">${encountered[0].name}</span>`]);
 		}
 	}, [userActivePokemon, encountered, setLogs, isLoading, getPlayerElementalAdvantage]);
@@ -195,9 +216,9 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 					            	<span>CP {(userActivePokemon.combat_power * userElementalBoost).toFixed(0)}</span> 
 					            	{(() => {
 					            		if (userElementalBoost - 1 > 0) {
-					            			return <span className="elemental-advatange">(+{(userElementalBoost - 1) * 100}%)</span>;
+					            			return <span className="elemental-advatange">(+{((userElementalBoost - 1) * 100).toFixed(0)}%)</span>;
 					            		} else if (userElementalBoost - 1 < 0) {
-					            			return <span className="elemental-disadvantage">({(userElementalBoost - 1) * 100}%)</span>;
+					            			return <span className="elemental-disadvantage">({((userElementalBoost - 1) * 100).toFixed(0)}%)</span>;
 					            		}
 					            	})()}
 					            </p>
@@ -227,9 +248,9 @@ const EncouteredPokemon = ({captured, setCaptured, logs, setLogs}) => {
 					            	<span>CP {(encountered[0].combat_power * wildElementalBoost).toFixed(0)}</span>
 					            	{(() => {
 					            		if (wildElementalBoost - 1 > 0) {
-					            			return <span className="elemental-advatange">(+{(wildElementalBoost - 1) * 100}%)</span>;
+					            			return <span className="elemental-advatange">(+{((wildElementalBoost - 1) * 100).toFixed(0)}%)</span>;
 					            		} else if (wildElementalBoost - 1 < 0) {
-					            			return <span className="elemental-disadvantage">({(wildElementalBoost - 1) * 100}%)</span>;
+					            			return <span className="elemental-disadvantage">({((wildElementalBoost - 1) * 100).toFixed(0)}%)</span>;
 					            		}
 					            	})()}
 					            </p>
